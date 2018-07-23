@@ -64,7 +64,7 @@ def updateAssets():
     sList = []
     resource = []    
     for assets in Assets.objects.all():
-        if assets.assets_type in ['vmser','server']:
+        if assets.assets_class in ['vmser','server']:
             try:
                 server_assets = Server_Assets.objects.get(assets=assets)
             except Exception, ex:

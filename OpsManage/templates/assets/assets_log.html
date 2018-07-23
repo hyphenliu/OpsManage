@@ -43,7 +43,7 @@
 				                                	{% for ds in assetsList %}
 				                                		<tr class="odd gradeX" id="assetsLogs-{{ds.id}}">
 				                                			<td class="text-center">
-				                                				{% if ds.assets_type == 'server' or ds.assets_type == 'net' %}
+				                                				{% if ds.assets_class == 'server' or ds.assets_class == 'net' %}
 				                                					 <a href="/assets_view/{{ds.assets_id}}">{{ds.assets_id}}</a>
 				                                				{% else %}
 				                                					 <a href="#">{{ds.assets_id}}</a>
@@ -107,7 +107,8 @@
 		$(document).ready(function() {
 		    $('#assetsTableList').DataTable({
 		        responsive: true,
-		        "order": [[4, 'asc']]
+		        "order": [[4, 'asc']],
+                "language": {"url": "../../../static/js/dataTables-zh_cn.json"},
 		    });
 		});
 

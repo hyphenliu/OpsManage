@@ -1,1 +1,6 @@
-﻿
+﻿2018-07-19 17:29:16 [WARNING] 获取资产信息失败: int() argument must be a string or a number, not 'NoneType'
+2018-07-19 17:29:19 [WARNING] 获取资产信息失败: int() argument must be a string or a number, not 'NoneType'
+2018-07-19 18:51:15 [WARNING] 创建文章标签失败: invalid literal for int() with base 10: ''
+2018-07-19 19:38:31 [WARNING] 获取资产信息失败: int() argument must be a string or a number, not 'NoneType'
+2018-07-19 19:38:33 [WARNING] 获取资产信息失败: int() argument must be a string or a number, not 'NoneType'
+2018-07-19 19:41:12 [WARNING] 获取资产信息失败: int() argument must be a string or a number, not 'NoneType'

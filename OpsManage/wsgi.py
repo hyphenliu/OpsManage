@@ -1,5 +1,5 @@
 """
-WSGI config for OpsManage project.
+WSGI config for OpsManage .
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

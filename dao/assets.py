@@ -9,7 +9,7 @@ class AssetsSource(object):
     
     def serverList(self):
         serverList = []
-        for assets in Assets.objects.filter(assets_type__in=["server","vmser","switch","route"]):
+        for assets in Assets.objects.filter(assets_class__in=["server","vmser","switch","route"]):
             try:
                 service =  Service_Assets.objects.get(id=assets.business).service_name
             except:
@@ -79,11 +79,11 @@ class AssetsSource(object):
         return self.source(assetsList)
     
     def group(self,group):
-        assetsList = Assets.objects.select_related().filter(group=group,assets_type__in=["server","vmser","switch","route"])
+        assetsList = Assets.objects.select_related().filter(group=group,assets_class__in=["server","vmser","switch","route"])
         return self.source(assetsList)
                 
     def service(self,business):
-        assetsList = Assets.objects.select_related().filter(business=business,assets_type__in=["server","vmser","switch","route"])
+        assetsList = Assets.objects.select_related().filter(business=business,assets_class__in=["server","vmser","switch","route"])
         return self.source(assetsList)
                 
     def source(self,assetsList):    

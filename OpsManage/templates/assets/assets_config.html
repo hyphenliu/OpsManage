@@ -1,815 +1,1513 @@
 {% extends 'index.html' %}
 {% block page-content %}
 
-<div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h1 class="page-header"><i class="fa  fa-cogs "></i> 基础资产配置</h1>
-                </div>
-                <!-- /.col-lg-12 -->
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header"><i class="fa  fa-cogs "></i> 基础资产配置</h1>
             </div>
-			<div class="row">
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            	<i class="fa  fa-github-alt  "></i> 产品线类型
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                        	<div>
-                        		<button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myProjectModal"><i class="glyphicon glyphicon-plus"></i></button>
-                        	</div>
-							<table width="100%" class="table table-striped table-bordered table-hover dataTable no-footer" id="projectList">						
-	                                <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th class="right">产品线名称</th>
-                                            <th class="text-center">操作</th>
-                                        </tr>											    
-	                                </thead>
-	                                <tbody>
-                                    	{% for ds in baseAssets.project %}
-	                                        <tr>
-	                                            <td>{{ds.id}}</td>
-	                                            <td>{{ds.project_name}}</td>
-	                                            <td class="text-center">
-	                                            	<button  type="button" class="btn btn-xs btn-default"  onclick="modfAssetsData(this,'project',{{ds.id}})"><abbr title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="delAssetsData(this,'project',{{ds.id}})"><abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
-	                                            	<a href="/assets/groups/{{ds.id}}/" style="text-decoration:none;"><button  type="button" class="btn btn-xs btn-default"><abbr title="查看组织结构图"><i class="fa fa-users  "></i></button></a>
-	                                            </td>
-	                                        </tr>
-                                        {% endfor %}
-	                                </tbody>
-	                       	</table>                            
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
+            <!-- /.col-lg-12 -->
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-folder-open"></i> 资产合同
                     </div>
-                    <!-- /.panel -->
-                </div>			
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            	<i class="fa  fa-github-square"></i> 业务类型
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                        	<div>
-                        		<button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myServiceModal"><i class="glyphicon glyphicon-plus"></i></button>
-                        	</div>
-							<table width="100%" class="table table-striped table-bordered table-hover dataTable no-footer" id="serviceList">						
-	                                <thead>
-											<tr>
-												<th class="text-center">
-													<label>
-														<span class="lbl"></span>
-													</label>
-													ID
-												</th>
-												<th class="text-center">所属产品线</th>				
-												<th class="text-center">应用类型</th>
-												<th class="right">操作</th>
-											</tr>											    
-	                                </thead>
-	                                <tbody>
-	                                	{% for ds in baseAssets.service %}
-	                                		<tr>
-		                                		<td class="text-center">
-		                                			{{ds.id}}
-		                                		</td>
-
-		                                		<td class="text-center">
-		                                			<span>{{ds.project.project_name}}</span>
-		                                		</td>
-		                                		<td class="text-center">
-		                                			<span>{{ds.service_name}}</span>
-		                                		</td>		                                		
-		                                		<td class="text-center">
-													<div>																				
-														<div class="btn-group">	
-															<button type="button" class="btn btn-xs btn-default" onclick="modfAssetsData(this,'service',{{ds.id}})">
-																<abbr title="編輯应用"><i class="fa fa-edit"></i>
-															</button>
-														</div>
-														<div class="btn-group">	
-															<button type="button" class="btn btn-xs btn-default" onclick="delAssetsData(this,'service',{{ds.id}})">
-																<abbr title="編輯应用"><i class="fa fa-trash"></i>
-															</button>											
-														</div>
-													</div>  	                                			
-		                                		</td>	
-	                                		</tr>                                			                                		                                			                                			                                			                                		
-	                                	{% endfor %}
-	                                </tbody>
-	                       	</table>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
-                <!-- /.col-lg-6 -->
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            	<i class="fa  fa-group  "></i> 使用分组
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                        	<div>
-                        		<button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myGroupModal"><i class="glyphicon glyphicon-plus"></i></button>
-                        	</div>
-                            <div class="table-responsive">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>使用组名称</th>
-                                            <th class="right">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    	{% for ds in baseAssets.group %}
-	                                        <tr>
-	                                            <td>{{ds.id}}</td>
-	                                            <td>{{ds.name}}</td>
-	                                            <td>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="modfAssetsData(this,'group',{{ds.id}})"><abbr title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="delAssetsData(this,'group',{{ds.id}})"><abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
-	                                            </td>
-	                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myContractModal"><i class="glyphicon glyphicon-plus"></i></button>
                             </div>
-                            <!-- /.table-responsive -->
+                            <table class="table table-striped" id="contractList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>合同名称</th>
+                                    <th>合同编号</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.contract %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.contract_name }}</td>
+                                        <td>{{ ds.contract_number }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                                    data-target="#modfContractModal-{{ ds.id }}">
+                                                <abbr title="编辑"><i
+                                                        class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'contract',{{ ds.id }},'{{ ds.contract_name }}')">
+                                                <abbr
+                                                        title="删除"><i
+                                                        class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- /.panel-body -->
+                        <!-- /.table-responsive -->
                     </div>
-                    <!-- /.panel -->
+                    <!-- /.panel-body -->
                 </div>
-                <!-- /.col-lg-6 -->
-                <!-- /.col-lg-6 -->                
+                <!-- /.panel -->
             </div>
-			<div class="row">
-                <div class="col-lg-5">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            	<i class="fa  fa-bank"></i> 机房信息
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="table-responsive">
-								<div>
-	                        		<button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myZoneModal"><i class="glyphicon glyphicon-plus"></i></button>
-	                        	</div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>机房名称</th>
-                                            <th>机房网段</th>
-                                            <th>机房联系人</th>
-                                            <th>联系电话</th>
-                                            <th class="right">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    	{% for ds in baseAssets.zone %}
-	                                        <tr>
-	                                            <td>{{ds.id}}</td>
-	                                            <td>{{ds.zone_name}}</td>
-	                                            <td>{{ds.zone_network|default:""}}</td>
-	                                            <td>{{ds.zone_contact|default:""}}</td>
-	                                            <td>{{ds.zone_number|default:""}}</td>
-	                                            <td>
-	                                            	<button  type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#modfZoneModal-{{ds.id}}"><abbr title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="delAssetsData(this,'zone',{{ds.id}})"><abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
-	                                            </td>
-	                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
+            <!-- /.col-lg-6 -->
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-folder-open  "></i> 维保合同
                     </div>
-                    <!-- /.panel -->
-                </div>			
-                <div class="col-lg-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            	<i class="fa  fa-flash"></i> 出口线路
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="table-responsive">
-								<div>
-	                        		<button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myLineModal"><i class="glyphicon glyphicon-plus"></i></button>
-	                        	</div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>线路类型</th>
-                                            <th class="right">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    	{% for ds in baseAssets.line %}
-	                                        <tr>
-	                                            <td>{{ds.id}}</td>
-	                                            <td>{{ds.line_name}}</td>
-	                                            <td>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="modfAssetsData(this,'line',{{ds.id}})"><abbr title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="delAssetsData(this,'line',{{ds.id}})"><abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
-	                                            </td>
-	                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myMaintenanceModal"><i class="glyphicon glyphicon-plus"></i>
+                                </button>
                             </div>
-                            <!-- /.table-responsive -->
+                            <table class="table table-striped" id="maintenanceList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>合同名称</th>
+                                    <th>合同编号</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.maintenance %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.maintenance_name }}</td>
+                                        <td>{{ ds.maintenance_number }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                                    data-target="#modfMaintenanceModal-{{ ds.id }}"><abbr title="编辑"><i
+                                                    class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'maintenance',{{ ds.id }},'{{ ds.maintenance_name }}')">
+                                                <abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
                         </div>
-                        <!-- /.panel-body -->
+                        <!-- /.table-responsive -->
                     </div>
-                    <!-- /.panel -->
+                    <!-- /.panel-body -->
                 </div>
-                <!-- /.col-lg-6 -->
-                <div class="col-lg-3">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            	<i class="glyphicon glyphicon-hdd  "></i> Raid类型
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="table-responsive">
-								<div>
-	                        		<button type="button" class="btn btn-xs btn-default" data-toggle="modal" data-target="#myRaidModal"><i class="glyphicon glyphicon-plus"></i></button>
-	                        	</div>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Raid类型</th>
-                                            <th class="right">操作</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    	{% for ds in baseAssets.raid %}
-	                                        <tr>
-	                                            <td>{{ds.id}}</td>
-	                                            <td>{{ds.raid_name}}</td>
-	                                            <td>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="modfAssetsData(this,'raid',{{ds.id}})"><abbr title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
-	                                            	<button  type="button" class="btn btn-xs btn-default" onclick="delAssetsData(this,'raid',{{ds.id}})"><abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
-	                                            </td>
-	                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
+                <!-- /.panel -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-github-alt  "></i> 业务系统
                     </div>
-                    <!-- /.panel -->
-                </div>               
-            </div>            
-</div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                    data-target="#myProjectModal"><i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                        <table width="100%" class="table table-striped table-bordered table-hover dataTable no-footer"
+                               id="businessList">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th class="right">业务系统名称</th>
+                                <th class="right">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for ds in baseAssets.project %}
+                                <tr>
+                                    <td>{{ ds.id }}</td>
+                                    <td>{{ ds.project_name }}</td>
+                                    <td class="right">
+                                        <button type="button" class="btn btn-xs btn-default"
+                                                onclick="modfAssetsData(this,'project',{{ ds.id }},'{{ ds.project_name }}')">
+                                            <abbr title="编辑"><i
+                                                    class="glyphicon glyphicon-edit"></i></button>
+                                        <button type="button" class="btn btn-xs btn-default"
+                                                onclick="delAssetsData(this,'project',{{ ds.id }},'{{ ds.project_name }}')">
+                                            <abbr title="删除"><i
+                                                    class="glyphicon glyphicon-trash"></i></button>
+                                        <a href="/assets/groups/{{ ds.id }}/" style="text-decoration:none;">
+                                            <button type="button" class="btn btn-xs btn-default"><abbr
+                                                    title="查看组织结构图"><i class="fa fa-users  "></i></button>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-github-square"></i> 业务项目
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                    data-target="#myServiceModal"><i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                        <table width="100%" class="table table-striped table-bordered table-hover dataTable no-footer"
+                               id="projectList">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th class="right">所属业务系统</th>
+                                <th class="right">业务项目</th>
+                                <th class="right">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for ds in baseAssets.service %}
+                                <tr>
+                                    <td class="right">
+                                        {{ ds.id }}
+                                    </td>
+
+                                    <td class="right">
+                                        <span>{{ ds.project.project_name }}</span>
+                                    </td>
+                                    <td class="right">
+                                        <span>{{ ds.service_name }}</span>
+                                    </td>
+                                    <td class="right">
+                                        <div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-xs btn-default"
+                                                        onclick="modfAssetsData(this,'service',{{ ds.id }},'{{ ds.service_name }}')">
+                                                    <abbr title="編輯项目"><i class="fa fa-edit"></i>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-xs btn-default"
+                                                        onclick="delAssetsData(this,'service',{{ ds.id }},'{{ ds.service_name }}')">
+                                                    <abbr title="編輯项目"><i class="fa fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-bank"></i> 机房信息
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myZoneModal"><i class="glyphicon glyphicon-plus"></i></button>
+                            </div>
+                            <table class="table table-striped" id="zoneList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>机房名称</th>
+                                    <th>机房联系人</th>
+                                    <th>联系电话</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.zone %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.zone_name }}</td>
+                                        <td>{{ ds.zone_contact|default:"" }}</td>
+                                        <td>{{ ds.zone_number|default:"" }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                                    data-target="#modfZoneModal-{{ ds.id }}"><abbr
+                                                    title="编辑"><i
+                                                    class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'zone',{{ ds.id }},'{{ ds.zone_name }}')">
+                                                <abbr title="删除"><i
+                                                        class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-home"></i> 制造/维保厂商
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myProviderModal"><i class="glyphicon glyphicon-plus"></i></button>
+                            </div>
+                            <table class="table table-striped" id="providerList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>制造/维保厂商</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.provider %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.provider_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'provider',{{ ds.id }},'{{ ds.provider_name }}')">
+                                                <abbr
+                                                        title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'provider',{{ ds.id }},'{{ ds.provider_name }}')">
+                                                <abbr
+                                                        title="删除"><i
+                                                        class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-6 -->
+        </div>
+        <div class="row">
+            <!-- /.col-lg-6 -->
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-folder-open"></i> 资产类型
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myTypeModal"><i class="glyphicon glyphicon-plus"></i></button>
+                            </div>
+                            <table class="table table-striped" id="typeList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>资产类别</th>
+                                    <th>资产类型</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.type %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.assets_type }}</td>
+                                        <td>{{ ds.type_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'type',{{ ds.id }},'{{ ds.type_name }}')">
+                                                <abbr title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'type',{{ ds.id }},'{{ ds.type_name }}')">
+                                                <abbr title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-group  "></i> 使用部门
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                    data-target="#myGroupModal"><i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="groupList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>部门名称</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.group %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'group',{{ ds.id }},'{{ ds.name }}')">
+                                                <abbr title="编辑"><i
+                                                        class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'group',{{ ds.id }},'{{ ds.name }}')">
+                                                <abbr
+                                                        title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-flash"></i> 出口线路
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myLineModal"><i class="glyphicon glyphicon-plus"></i></button>
+                            </div>
+                            <table class="table table-striped" id="lineList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>线路类型</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.line %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.line_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'line',{{ ds.id }},'{{ ds.line_name }}')">
+                                                <abbr
+                                                        title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'line',{{ ds.id }},'{{ ds.line_name }}')">
+                                                <abbr title="删除"><i
+                                                        class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <div class="col-lg-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="glyphicon glyphicon-hdd  "></i> Raid类型
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <div>
+                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                        data-target="#myRaidModal"><i class="glyphicon glyphicon-plus"></i></button>
+                            </div>
+                            <table class="table table-striped" id="raidList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Raid类型</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.raid %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.raid_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'raid',{{ ds.id }},'{{ ds.raid_name }}')">
+                                                <abbr
+                                                        title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'raid',{{ ds.id }},'{{ ds.raid_name }}')">
+                                                <abbr title="删除"><i
+                                                        class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-group  "></i> 设备状态
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                    data-target="#myStatusModal"><i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="statusList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>状态名称</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.status %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.status_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'status',{{ ds.id }},'{{ ds.status_name }}')">
+                                                <abbr title="编辑"><i
+                                                        class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'status',{{ ds.id }},'{{ ds.status_name }}')">
+                                                <abbr
+                                                        title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-group  "></i> 监控状态
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                    data-target="#myMonitorModal"><i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="monitorList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>状态名称</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.monitor %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.monitor_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'monitor',{{ ds.id }},'{{ ds.monitor_name }}')">
+                                                <abbr title="编辑"><i
+                                                        class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'monitor',{{ ds.id }},'{{ ds.monitor_name }}')">
+                                                <abbr
+                                                        title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa  fa-group  "></i> 设备级别
+                    </div>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div>
+                            <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
+                                    data-target="#myLevelModal"><i class="glyphicon glyphicon-plus"></i></button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="levelList">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>级别名称</th>
+                                    <th class="right">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for ds in baseAssets.level %}
+                                    <tr>
+                                        <td>{{ ds.id }}</td>
+                                        <td>{{ ds.level_name }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="modfAssetsData(this,'level',{{ ds.id }},'{{ ds.level_name }}')">
+                                                <abbr title="编辑"><i
+                                                        class="glyphicon glyphicon-edit"></i></button>
+                                            <button type="button" class="btn btn-xs btn-default"
+                                                    onclick="delAssetsData(this,'level',{{ ds.id }},'{{ ds.level_name }}')">
+                                                <abbr
+                                                        title="删除"><i class="glyphicon glyphicon-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+        </div>
+    </div>
 
 
-<div class="modal fade" id="myProjectModal" tabindex="-1" role="dialog" aria-labelledby="myProjectModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myProjectModalLabel">
-					添加产品线资产
-				</h4>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal" role="form" id="project_assets">
-					<div class="form-group">				
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>产品线名称</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="project_name" id="project_name"/>	
-						</div>											
-					</div>									
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-				<button type="button" class="btn btn-primary" onclick="addAssetsData(this,'project')">
-					添加
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
+    <div class="modal fade" id="myProjectModal" tabindex="-1" role="dialog" aria-labelledby="myProjectModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myProjectModalLabel">
+                        添加业务系统
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="project_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>业务系统名称</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="project_name" id="project_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'project')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 
-<div class="modal fade" id="myServiceModal" tabindex="-1" role="dialog" aria-labelledby="myServiceModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myServiceModalLabel">
-					添加应用类型
-				</h4>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal" role="form" id="service_assets">
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>选择产品线</strong></label>																												
-						<div class="col-sm-6">
-						   <select class="form-control" name="project_id" id="project_service_select">
-						   		<option  value="">请选择一个类型</option>
-									{% for s in baseAssets.project %}
-										<option value="{{s.id}}" name="project_id">{{s.project_name}}</option>
-									{% endfor %}								   							
-							</select>
-						</div>	
-					</div>
-					<div class="form-group">				
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>应用类型</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="service_name" id="service_name"/>	
-						</div>											
-					</div>									
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-				<button type="button" class="btn btn-primary" onclick="addServiceData(this)">
-					添加
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
+    <div class="modal fade" id="myServiceModal" tabindex="-1" role="dialog" aria-labelledby="myServiceModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myServiceModalLabel">
+                        添加业务项目
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="service_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>选择业务系统</strong></label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="project_id" id="project_service_select">
+                                    <option value="">请选择一个类型</option>
+                                    {% for s in baseAssets.project %}
+                                        <option value="{{ s.id }}" name="project_id">{{ s.project_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>业务项目</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="service_name" id="service_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addServiceData(this, 'service')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 
-<div class="modal fade" id="myGroupModal" tabindex="-1" role="dialog" aria-labelledby="myGroupModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myGroupModalLabel">
-					添加使用组
-				</h4>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal" role="form" id="group_assets">
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>使用组名</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="name" />	
-						</div>											
-					</div>									
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-				<button type="button" class="btn btn-primary" onclick="addAssetsData(this,'group')">
-					添加
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
+    <div class="modal fade" id="myGroupModal" tabindex="-1" role="dialog" aria-labelledby="myGroupModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myGroupModalLabel">
+                        添加部门
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="group_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>部门名称</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'group')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 
-<div class="modal fade" id="myZoneModal" tabindex="-1" role="dialog" aria-labelledby="myZoneModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myZoneModalLabel">
-					机房信息
-				</h4>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal" role="form" id="zone_assets">
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>机房名称</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="zone_name" />	
-						</div>											
-					</div>	
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>机房网段</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="zone_network" />	
-						</div>											
-					</div>						
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>机房联系人</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="zone_contact" />	
-						</div>											
-					</div>	
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>联系人号码</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="zone_number" />	
-						</div>											
-					</div>																				
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-				<button type="button" class="btn btn-primary" onclick="addAssetsData(this,'zone')">
-					添加
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
+    <div class="modal fade" id="myZoneModal" tabindex="-1" role="dialog" aria-labelledby="myZoneModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myZoneModalLabel">
+                        机房信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="zone_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>机房名称</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="zone_name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>机房联系人</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="zone_contact"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>联系人号码</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="zone_number"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'zone')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {% for ds in baseAssets.zone %}
+        <div class="modal fade" id="modfZoneModal-{{ ds.id }}" tabindex="-1" role="dialog"
+             aria-labelledby="modfZoneModalLabel-{{ ds.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="modfZoneModalLabel-{{ ds.id }}">
+                            编辑机房信息
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="zone_assets_{{ ds.id }}">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>机房名称</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="zone_name"
+                                           value="{{ ds.zone_name }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>机房联系人</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="zone_contact"
+                                           value="{{ ds.zone_contact|default:"" }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>联系人号码</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="zone_number"
+                                           value="{{ ds.zone_number|default:"" }}"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="modfZoneAssetsData(this,{{ ds.id }},'zone')">
+                            确认修改
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    {% endfor %}
+    <div class="modal fade" id="myLineModal" tabindex="-1" role="dialog" aria-labelledby="myLineModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myLineModalLabel">
+                        添加出口线路
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="line_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>出口线路</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="line_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'line')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 
-{% for ds in baseAssets.zone %}
-	<div class="modal fade" id="modfZoneModal-{{ds.id}}" tabindex="-1" role="dialog" aria-labelledby="modfZoneModalLabel-{{ds.id}}" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-						&times;
-					</button>
-					<h4 class="modal-title" id="modfZoneModalLabel-{{ds.id}}">
-						机房信息
-					</h4>
-				</div>
-				<div class="modal-body">
-					<form class="form-horizontal" role="form" id="zone_assets_{{ds.id}}">
-						<div class="form-group">
-							<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>机房名称</strong></label>																												
-							<div class="col-sm-6">
-								<input class="form-control" type="text" name="zone_name" value="{{ds.zone_name}}"/>	
-							</div>											
-						</div>	
-						<div class="form-group">
-							<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>机房网段</strong></label>																												
-							<div class="col-sm-6">
-								<input class="form-control" type="text" name="zone_network" value="{{ds.zone_network|default:""}}"/>	
-							</div>											
-						</div>							
-						<div class="form-group">
-							<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>机房联系人</strong></label>																												
-							<div class="col-sm-6">
-								<input class="form-control" type="text" name="zone_contact" value="{{ds.zone_contact|default:""}}"/>	
-							</div>											
-						</div>	
-						<div class="form-group">
-							<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>联系人号码</strong></label>																												
-							<div class="col-sm-6">
-								<input class="form-control" type="text" name="zone_number"  value="{{ds.zone_number|default:""}}"/>	
-							</div>											
-						</div>																	
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-					</button>
-					<button type="button" class="btn btn-primary" onclick="modfZoneAssetsData(this,{{ds.id}},'zone')">
-						添加
-					</button>
-				</div>
-			</div><!-- /.modal-content -->
-		</div><!-- /.modal -->
-	</div>
-{% endfor %}
-<div class="modal fade" id="myLineModal" tabindex="-1" role="dialog" aria-labelledby="myLineModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myLineModalLabel">
-					添加出口线路
-				</h4>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal" role="form" id="line_assets">
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>出口线路</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="line_name" />	
-						</div>											
-					</div>									
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-				<button type="button" class="btn btn-primary" onclick="addAssetsData(this,'line')">
-					添加
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
+    <div class="modal fade" id="myRaidModal" tabindex="-1" role="dialog" aria-labelledby="myRaidModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myRaidModalLabel">
+                        添加Raid类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="raid_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>Raid类型</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="raid_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'raid')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
 
-<div class="modal fade" id="myRaidModal" tabindex="-1" role="dialog" aria-labelledby="myRaidModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-					&times;
-				</button>
-				<h4 class="modal-title" id="myRaidModalLabel">
-					添加Raid类型
-				</h4>
-			</div>
-			<div class="modal-body">
-				<form class="form-horizontal" role="form" id="raid_assets">
-					<div class="form-group">
-						<label class="col-sm-3 control-label no-padding-right" for="form-field-4"><strong>Raid类型</strong></label>																												
-						<div class="col-sm-6">
-							<input class="form-control" type="text" name="raid_name" />	
-						</div>											
-					</div>									
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭
-				</button>
-				<button type="button" class="btn btn-primary" onclick="addAssetsData(this,'raid')">
-					添加
-				</button>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal -->
-</div>
+    <div class="modal fade" id="myContractModal" tabindex="-1" role="dialog" aria-labelledby="myContractModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myContractModalLabel">
+                        添加资产合同信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="contract_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>合同名称</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="contract_name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>合同编号</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="contract_number"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'contract')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {% for ds in baseAssets.contract %}
+        <div class="modal fade" id="modfContractModal-{{ ds.id }}" tabindex="-1" role="dialog"
+             aria-labelledby="modfContractModalLabel-{{ ds.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="modfContractModalLabel-{{ ds.id }}">
+                            编辑资产合同信息
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="contract_assets_{{ ds.id }}">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>资产合同名称</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="contract_name"
+                                           value="{{ ds.contract_name }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>资产合同号</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="contract_number"
+                                           value="{{ ds.contract_number|default:"" }}"/>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="modfZoneAssetsData(this,{{ ds.id }},'contract')">
+                            确认修改
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    {% endfor %}
+    <div class="modal fade" id="myMaintenanceModal" tabindex="-1" role="dialog"
+         aria-labelledby="myMaintenanceModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myMaintenanceModalLabel">
+                        添加维保合同信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="maintenance_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>合同名称</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="maintenance_name"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>合同编号</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="maintenance_number"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'maintenance')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    {% for ds in baseAssets.maintenance %}
+        <div class="modal fade" id="modfMaintenanceModal-{{ ds.id }}" tabindex="-1" role="dialog"
+             aria-labelledby="modfMaintenanceModalLabel-{{ ds.id }}" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title" id="modfMaintenanceModalLabel-{{ ds.id }}">
+                            编辑维保合同
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal" role="form" id="maintenance_assets_{{ ds.id }}">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>维保合同名称</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="maintenance_name"
+                                           value="{{ ds.maintenance_name }}"/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label no-padding-right"
+                                       for="form-field-4"><strong>维保合同编码</strong></label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="text" name="maintenance_number"
+                                           value="{{ ds.maintenance_number|default:"" }}"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                        </button>
+                        <button type="button" class="btn btn-primary"
+                                onclick="modfZoneAssetsData(this,{{ ds.id }},'maintenance')">
+                            确认修改
+                        </button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+    {% endfor %}
+    <div class="modal fade" id="myProviderModal" tabindex="-1" role="dialog" aria-labelledby="myProviderModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myProviderModalLabel">
+                        添加制造/维保厂商信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="provider_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>制造/维保厂商</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="provider_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'provider')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="myTypeModal" tabindex="-1" role="dialog" aria-labelledby="myTypeModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myTypeModalLabel">
+                        添加资产类型
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="type_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>选择资产类别</strong></label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="assets_type" id="assets_type_select">
+                                    <option value="">请选择一个类型</option>
+                                    <option value="server" name="assets_type">主机设备</option>
+                                    <option value="vmser" name="assets_type">虚拟机设备</option>
+                                    <option value="network" name="assets_type">网络设备</option>
+                                    <option value="security" name="assets_type">安全设备</option>
+                                    <option value="storage" name="assets_type">存储设备</option>
+                                    <option value="office" name="assets_type">办公设备</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>资产类型</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="type_name" id="type_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addServiceData(this,'type')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="myLevelModal" tabindex="-1" role="dialog" aria-labelledby="myLevelModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myLevelModalLabel">
+                        添加设备等级信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="level_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>设备等级</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="level_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'level')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="myStatusModal" tabindex="-1" role="dialog" aria-labelledby="myStatusModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myStatusModalLabel">
+                        添加设备状态信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="status_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>设备状态</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="status_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'status')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <div class="modal fade" id="myMonitorModal" tabindex="-1" role="dialog" aria-labelledby="myMonitorModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myMonitorModalLabel">
+                        添加监控状态信息
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form" id="monitor_assets">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right"
+                                   for="form-field-4"><strong>监控状态</strong></label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" name="monitor_name"/>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="addAssetsData(this,'monitor')">
+                        添加
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            {%  for k,v in baseAssets.items %}
+                $("#" + "{{ k }}" + "List").DataTable({
+                    "language": {
+                        "url": "../../../static/js/dataTables-zh_cn.json"
+                    }
+                });
+            {% endfor %}
+        });
 
 
+        function addServiceData(obj, op) {
+            var btnObj = $(obj);
+            btnObj.attr('disabled', true);
+            if (op == 'service') {
+                var putUrl = '/api/service/';
+                var form = document.getElementById('service_assets');
+                var jsdata = JSON.stringify({
+                    "project_id": $('#project_service_select option:selected').val(),
+                    "project_name": $('#project_service_select option:selected').text(),
+                    "service_name": document.getElementById("service_name").value
+                }); //提交参数
+            }
+            else if (op == 'type') {
+                var putUrl = '/api/type/';
+                var form = document.getElementById('type_assets');
+                var jsdata = JSON.stringify({
+                    {#"type_id": $('#assets_type_select option:selected').val(),#}
+                    "assets_type": $('#assets_type_select option:selected').val(),
+                    "type_name": document.getElementById("type_name").value
+                }); //提交参数
+            }
+            for (var i = 0; i < form.length; ++i) {
+                var name = form[i].name;
+                var value = form[i].value;
+                if (value.length == 0) {
+                    window.wxc.xcConfirm("请注意必填项不能为空~", window.wxc.xcConfirm.typeEnum.error);
+                    btnObj.removeAttr('disabled');
+                    return false;
+                }
+            }
+            ;
+            $.ajax({
+                url: putUrl, //请求地址
+                type: "POST",  //提交类似
+                contentType: "application/json",
+                dataType: "json",
+                data: jsdata, //提交参数
+                success: function (response) {
+                    btnObj.removeAttr('disabled');
+                    window.wxc.xcConfirm("资产添加成功", window.wxc.xcConfirm.typeEnum.success);
+                    location.reload();
 
-<script type="text/javascript"> 
-	$(document).ready(function() {
-	    $('#serviceList').DataTable();
-	} ); 
-	$(document).ready(function() {
-	    $('#projectList').DataTable();
-	} ); 	
-	function addServiceData(obj) {
-		var btnObj = $(obj);
-		btnObj.attr('disabled',true);
-		var form = document.getElementById('service_assets');
-		for (var i = 0; i < form.length; ++i) {
-			var name = form[i].name;
-			var value = form[i].value;
-			if ( value.length == 0){
-				window.wxc.xcConfirm("请注意必填项不能为空~", window.wxc.xcConfirm.typeEnum.error);
-				btnObj.removeAttr('disabled');
-				return false;
-			}
-		};
-		$.ajax({
-			url:'/api/service/', //请求地址
-			type:"POST",  //提交类似
-			contentType : "application/json", 
-			dataType : "json", 
-			data:JSON.stringify({
-				"project_id": $('#project_service_select option:selected').val(),
-				"project_name": $('#project_service_select option:selected').text(),
-				"service_name": document.getElementById("service_name").value
-			}), //提交参数
-			success:function(response){
-				btnObj.removeAttr('disabled');
-				window.wxc.xcConfirm("资产添加成功", window.wxc.xcConfirm.typeEnum.success);
- 				location.reload();
-				
-			},
-	    	error:function(response){
-	    		btnObj.removeAttr('disabled');
-	    		window.wxc.xcConfirm("资产添加失败", window.wxc.xcConfirm.typeEnum.error);
-/* 	    		location.reload(); */
-	    	}
-		})	
-	}
-	
-	function addAssetsData(obj,op) {
-		var btnObj = $(obj);
-		btnObj.attr('disabled',true);
-		var post_data = {}; 
-		if (op=="project"){
-			var putUrl = '/api/project/';
-			var form = document.getElementById('project_assets');
-		}
-		else if (op=="group"){
-			var putUrl = '/api/group/';
-			var form = document.getElementById('group_assets');
-		}
-		else if (op=="zone"){
-			var putUrl = '/api/zone/';
-			var form = document.getElementById('zone_assets');
-		}		
-		else if (op=="line"){
-			var putUrl = '/api/line/';
-			var form = document.getElementById('line_assets');
-		}	
-		else if (op=="raid"){
-			var putUrl = '/api/raid/';
-			var form = document.getElementById('raid_assets');
-		}		
-		else if (op=="status"){
-			var putUrl = '/api/status/';
-			var form = document.getElementById('status_assets');
-		}			
+                },
+                error: function (response) {
+                    btnObj.removeAttr('disabled');
+                    window.wxc.xcConfirm("资产添加失败", window.wxc.xcConfirm.typeEnum.error);
+                    /* 	    		location.reload(); */
+                }
+            })
+        }
 
-		for (var i = 0; i < form.length; ++i) {
-			var name = form[i].name;
-			var value = form[i].value;
-			if ( value.length == 0){
-				window.wxc.xcConfirm("请注意必填项不能为空~", window.wxc.xcConfirm.typeEnum.error);
-				btnObj.removeAttr('disabled');
-				return false;
-			}
-			else{
-				post_data[name] = value;
-			};
-			
-		};
-		$.ajax({
-			dataType: "JSON",
-			url:putUrl, //请求地址
-			type:"POST",  //提交类似
-			data:post_data, //提交参数
-			success:function(response){
-				btnObj.removeAttr('disabled');
-				window.wxc.xcConfirm("资产添加成功", window.wxc.xcConfirm.typeEnum.success);
- 				location.reload();			
-			},
-	    	error:function(response){
-	    		btnObj.removeAttr('disabled');
-	    		window.wxc.xcConfirm("资产添加失败", window.wxc.xcConfirm.typeEnum.error);
-/* 	    		location.reload(); */
-	    	}
-		})	
-	}	
-	
-	function modfZoneAssetsData(obj,id,op) {
-		var btnObj = $(obj);
-		btnObj.attr('disabled',true);
-		var post_data = {}; 
-		if (op=="service"){
-			var putUrl = '/api/service/'+id+'/';
-			var form = document.getElementById('service_assets_'+id);
-		}
-		else if (op=="zone"){
-			var putUrl = '/api/zone/'+id+'/';
-			var form = document.getElementById('zone_assets_'+id);
-		}					
+        function addAssetsData(obj, op) {
+            var btnObj = $(obj);
+            btnObj.attr('disabled', true);
+            var post_data = {};
+            var putUrl = '/api/' + op + '/';
+            var form = document.getElementById(op + '_assets');
+            for (var i = 0; i < form.length; ++i) {
+                var name = form[i].name;
+                var value = form[i].value;
+                if (value.length == 0) {
+                    window.wxc.xcConfirm("请注意必填项不能为空~", window.wxc.xcConfirm.typeEnum.error);
+                    btnObj.removeAttr('disabled');
+                    return false;
+                }
+                else {
+                    post_data[name] = value;
+                }
+                ;
 
-		for (var i = 0; i < form.length; ++i) {
-			var name = form[i].name;
-			var value = form[i].value;
-			post_data[name] = value;
-			if ( value.length == 0){
-				window.wxc.xcConfirm("请注意必填项不能为空~", window.wxc.xcConfirm.typeEnum.error);
-				btnObj.removeAttr('disabled');
-				return false;
-			}
-			else{
-				post_data[name] = value;
-			};			
-			
-		};
-		$.ajax({
-			dataType: "JSON",
-			url:putUrl, //请求地址
-			type:"PUT",  //提交类似
-			data:post_data, //提交参数
-			success:function(response){
-				btnObj.removeAttr('disabled');
-				window.wxc.xcConfirm("资产修改成功", window.wxc.xcConfirm.typeEnum.success);
- 				location.reload();
-				
-			},
-	    	error:function(response){
-	    		btnObj.removeAttr('disabled');
-	    		window.wxc.xcConfirm("资产修改失败", window.wxc.xcConfirm.typeEnum.error);
-/* 	    		location.reload(); */
-	    	}
-		})	
-	}		
-	
-	function  modfAssetsData(obj,op,id){
-		var btnObj = $(obj);
-		btnObj.attr('disabled',true);
-		var post_data = {}; 		
-		window.wxc.xcConfirm("请输入新名称：", window.wxc.xcConfirm.typeEnum.input,{
-			onOk:function(result){
-				if (result.length == 0){
-					/* 如果没有输入字符串则直接退出 */
-					btnObj.removeAttr('disabled');
-					return;
-				};
-				if (op=="service"){
-					var putUrl = '/api/service/' + id +'/';
-					post_data['service_name'] = result;
-				}
-				else if (op=="project"){
-					var putUrl = '/api/project/' + id + '/';
-					post_data['project_name'] = result;
-				}				
-				else if (op=="group"){
-					var putUrl = '/api/group/'+ id +'/';
-					post_data['name'] = result;
-				}	
-				else if (op=="line"){
-					var putUrl = '/api/line/'+ id +'/';
-					post_data['line_name'] = result;
-				}	
-				else if (op=="raid"){
-					var putUrl = '/api/raid/'+ id +'/';
-					post_data['raid_name'] = result;
-				}		
-				else if (op=="status"){
-					var putUrl = '/api/status/'+ id +'/';
-					post_data['status_name'] = result;
-				};				
-				$.ajax({
-					  type: 'PUT',
-					  url: putUrl,
-					  data:post_data,
-				      success:function(response){	
-				    	  btnObj.removeAttr('disabled');
-			              window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);	
-			              location.reload();
-					},
-		            error:function(response){
-		            	btnObj.removeAttr('disabled');
-		            	window.wxc.xcConfirm("修改失败！", window.wxc.xcConfirm.typeEnum.error);
-		            	location.reload();
-		            },							  
-					});
-				
-			}
-		});								   
-   }
-	
-	function delAssetsData(obj,op,id) {
-		var btnObj = $(obj);
-		btnObj.attr('disabled',true);
-		var txt=  "是否确认删除？";
-		var post_data = {};
-		if (op=="service"){
-			var putUrl = '/api/service/'+ id + '/';
-		}
-		else if (op=="project"){
-			var putUrl = '/api/project/' + id + '/';
-		}		
-		else if (op=="group"){
-			var putUrl = '/api/group/' + id + '/';
-		}
-		else if (op=="zone"){
-			var putUrl = '/api/zone/' + id + '/';
-		}		
-		else if (op=="line"){
-			var putUrl = '/api/line/' + id + '/';
-		}	
-		else if (op=="raid"){
-			var putUrl = '/api/raid/' + id + '/';
-		}		
-		else if (op=="status"){
-			var putUrl = '/api/status/' + id + '/';
-		};			
-		var option = {				
-				title: "id-"+id,
-				btn: parseInt("0011",2),
-				onOk: function(){
-					$.ajax({
-						  type: 'DELETE',
-						  url:putUrl,
-					      success:function(response){	
-					    	btnObj.removeAttr('disabled');
-		                	window.wxc.xcConfirm("删除成功！", window.wxc.xcConfirm.typeEnum.success);
-		                	location.reload();				            
-					      },
-			              error:function(response){
-			            	btnObj.removeAttr('disabled');
-			            	window.wxc.xcConfirm("删除失败！", window.wxc.xcConfirm.typeEnum.error);	
-			              }
-						});
-				},
-				onCancel:function(){	
-				},
-				onClose:function(){
-				}
-			}
-			window.wxc.xcConfirm(txt, "custom", option);			   
-		}	
-		
-</script>
+            }
+            ;
+            $.ajax({
+                dataType: "JSON",
+                url: putUrl, //请求地址
+                type: "POST",  //提交类似
+                data: post_data, //提交参数
+                success: function (response) {
+                    btnObj.removeAttr('disabled');
+                    window.wxc.xcConfirm("资产添加成功", window.wxc.xcConfirm.typeEnum.success);
+                    location.reload();
+                },
+                error: function (response) {
+                    btnObj.removeAttr('disabled');
+                    window.wxc.xcConfirm("资产添加失败", window.wxc.xcConfirm.typeEnum.error);
+                    /* 	    		location.reload(); */
+                }
+            })
+        }
+
+        function modfZoneAssetsData(obj, id, op) {
+            var btnObj = $(obj);
+            btnObj.attr('disabled', true);
+            var post_data = {};
+            var putUrl = '/api/'+op+'/' + id + '/';
+            var form = document.getElementById(op+'_assets_' + id);
+            for (var i = 0; i < form.length; ++i) {
+                var name = form[i].name;
+                var value = form[i].value;
+                post_data[name] = value;
+                if (value.length == 0) {
+                    window.wxc.xcConfirm("请注意必填项不能为空~", window.wxc.xcConfirm.typeEnum.error);
+                    btnObj.removeAttr('disabled');
+                    return false;
+                }
+                else {
+                    post_data[name] = value;
+                }
+                ;
+
+            }
+            ;
+            $.ajax({
+                dataType: "JSON",
+                url: putUrl, //请求地址
+                type: "PUT",  //提交类似
+                data: post_data, //提交参数
+                success: function (response) {
+                    btnObj.removeAttr('disabled');
+                    window.wxc.xcConfirm("资产修改成功", window.wxc.xcConfirm.typeEnum.success);
+                    location.reload();
+
+                },
+                error: function (response) {
+                    btnObj.removeAttr('disabled');
+                    window.wxc.xcConfirm("资产修改失败", window.wxc.xcConfirm.typeEnum.error);
+                    /* 	    		location.reload(); */
+                }
+            })
+        }
+
+        function modfAssetsData(obj, op, id, name) {
+            var btnObj = $(obj);
+            btnObj.attr('disabled', true);
+            var post_data = {};
+            window.wxc.xcConfirm("请输入新名称：", window.wxc.xcConfirm.typeEnum.input, {
+                title: "修改：" + name,
+                btn: parseInt("0011", 2),
+                onCancel() {
+                    btnObj.removeAttr('disabled');
+                    return;
+                },
+                onClose() {
+                    btnObj.removeAttr('disabled');
+                    return;
+                },
+
+                onOk: function (result) {
+                    if (result.length == 0) {
+                        /* 如果没有输入字符串则直接退出 */
+                        btnObj.removeAttr('disabled');
+                        return;
+                    }
+                    ;
+                    var putUrl = '/api/' + op + '/' + id + '/';
+                    post_data[op + '_name'] = result;
+                    $.ajax({
+                        type: 'PUT',
+                        url: putUrl,
+                        data: post_data,
+                        success: function (response) {
+                            btnObj.removeAttr('disabled');
+                            window.wxc.xcConfirm("修改成功", window.wxc.xcConfirm.typeEnum.success);
+                            location.reload();
+                        },
+                        error: function (response) {
+                            btnObj.removeAttr('disabled');
+                            window.wxc.xcConfirm("修改失败！", window.wxc.xcConfirm.typeEnum.error);
+                            location.reload();
+                        },
+                    });
+
+                }
+            })
+            ;
+        }
+
+        function delAssetsData(obj, op, id, name) {
+            var btnObj = $(obj);
+            btnObj.attr('disabled', true);
+            var txt = "是否确认删除？";
+            var post_data = {};
+            var putUrl = '/api/' + op + '/' + id + '/';
+            var option = {
+                title: "名称:" + name,
+                btn: parseInt("0011", 2),
+                onOk: function () {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: putUrl,
+                        success: function (response) {
+                            btnObj.removeAttr('disabled');
+                            window.wxc.xcConfirm("删除成功！", window.wxc.xcConfirm.typeEnum.success);
+                            location.reload();
+                        },
+                        error: function (response) {
+                            btnObj.removeAttr('disabled');
+                            window.wxc.xcConfirm("删除失败！", window.wxc.xcConfirm.typeEnum.error);
+                        }
+                    });
+                },
+                onCancel: function () {
+                    btnObj.removeAttr('disabled');
+                },
+                onClose: function () {
+                    btnObj.removeAttr('disabled');
+                }
+            }
+            window.wxc.xcConfirm(txt, "custom", option);
+        }
+
+    </script>
 {% endblock %}
