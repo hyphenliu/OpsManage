@@ -434,7 +434,7 @@ def assets_import(request):
                 errFlag = True
 
             if not Service_Assets.objects.get(Service_Assets=project).count():
-                errFlag =True
+                errFlag = True
             if not Project_Assets.objects.get(project_name=business).count():
                 resultStr += '业务系统【%s】不存在；' % business
                 errFlag = True
@@ -671,9 +671,15 @@ def assets_search(request):
             name = '''{name}'''.format(name=a.name)
             model = '''{model}'''.format(model=a.model)
             for p in baseAssets.get('project'):
-                if p.project_name == a.project: project = '''{project}'''.format(project=p.project_name)
+                if p.project_name == a.project:
+                    project = '''{project}'''.format(project=p.project_name)
+                else:
+                    project = '''[{project}]<li><code>不在</code></li>基础配置表[业务系统]里'''.format(project=a.project)
             for s in baseAssets.get('service'):
-                if s.service_name == a.business: service = '''{service}'''.format(service=s.service_name)
+                if s.service_name == a.business:
+                    service = '''{service}'''.format(service=s.service_name)
+                else:
+                    service = '''[{service}]<li><code>不在</code></li>基础配置表[业务项目]里'''.format(service=a.business)
             status = '''<button type="button" class="btn btn-outline btn-default">{status}</button>'''.format(
                 status=a.status)
             if a.buy_time:
@@ -682,7 +688,10 @@ def assets_search(request):
                 buy_time = '''{buy_time}'''.format(buy_time=str(a.create_date)[0:10])
             group = '''{groupname}'''.format(groupname=a.group)
             for z in baseAssets.get('zone'):
-                if z.zone_name == a.put_zone: put_zone = '''{zone_name}'''.format(zone_name=z.zone_name)
+                if z.zone_name == a.put_zone:
+                    put_zone = '''{zone_name}'''.format(zone_name=z.zone_name)
+                else:
+                    put_zone = '''[{zone_name}]<li><code>不在</code></li>基础配置表[机房位置]里'''.format(zone_name=a.put_zone)
             try:
                 if a.assets_class in ["server", "vmser"]:
                     assets_type_div = '''
@@ -763,7 +772,7 @@ def assets_update(request):
             except Exception, ex:
                 logger.warn(msg="批量更新获取资产失败: {ex}".format(ex=str(ex)))
                 continue
-            if assets.assets_type in ['vmser', 'server']:
+            if assets.assets_class in ['vmser', 'server']:
                 try:
                     server_assets = Server_Assets.objects.get(assets=assets)
                 except Exception, ex:
@@ -844,7 +853,7 @@ def assets_delete(request):
             except Exception, ex:
                 logger.error(msg="删除资产失败: {ex}".format(ex=ex))
                 continue
-            if assets.assets_type in ['vmser', 'server']:
+            if assets.assets_class in ['vmser', 'server']:
                 try:
                     server_assets = Server_Assets.objects.get(assets=assets)
                 except Exception, ex:
@@ -871,8 +880,9 @@ def assets_delete(request):
 def assets_dumps(request):
     if request.method == "POST":
         dateStr = datetime.datetime.now().strftime('%Y%m%d')
-        dRbt = CellWriter('assets_dumps-%s.xls' % dateStr)
-        serSheet = dRbt.workbook.add_sheet('服务器资产', cell_overwrite_ok=True)
+        filename = 'assets_dumps-' + dateStr + '.xls'
+        dRbt = CellWriter(filename)
+        serSheet = dRbt.workbook.add_sheet('服务器设备资产', cell_overwrite_ok=True)
         netSheet = dRbt.workbook.add_sheet('网络设备资产', cell_overwrite_ok=True)
         bList = ['设备类型', '资产编号', '机房位置', '机架位置', '设备型号', '设备序列号', '管理IP', '制造商', '购买时间', '资产合同',
                  '维保服务商', '维保联系人', '维保服务级别', '维保开始时间', '维保合同', '过保时间', '资产归属人', '设备状态',
@@ -881,11 +891,13 @@ def assets_dumps(request):
                  '系统版本号', '机房线路']
         nList = ['设备类型', '资产编号', '机房位置', '机架位置', '设备型号', '设备序列号', '管理IP', '制造商', '购买时间', '资产合同',
                  '维保服务商', '维保联系人', '维保服务级别', '维保开始时间', '维保合同', '过保时间', '资产归属人', '设备状态',
-                 '监控状态', '使用部门', '所属业务系统', '所属业务项目', '主机地址', '背板带宽', '端口情况', '固件版本', '模块序列号', '设备级别',
-                 'CPU型号', '内存容量', '配置说明', '管理用户', '端口']
+                 '监控状态', '使用部门', '所属业务系统', '所属业务项目', '主机地址', '背板带宽', '端口情况', '固件版本', '模块序列号',
+                 '设备级别', 'CPU型号', '内存容量', '配置说明', '管理用户', '端口']
         dRbt.writeBanner(sheetName=serSheet, bList=bList)
         dRbt.writeBanner(sheetName=netSheet, bList=nList)
-        count = 1
+        ncount = 0
+        scount = 0
+        count = 0
         for ast in request.POST.get('assetsIds').split(','):
             try:
                 assets = Assets.objects.select_related().get(id=int(ast))
@@ -894,59 +906,66 @@ def assets_dumps(request):
                 continue
             if assets.assets_class in ['vmser', 'server']:
                 sheet = serSheet
-                sheet.write(count, 23, assets.server_assets.ip, dRbt.bodySttle())
-                sheet.write(count, 24, assets.server_assets.keyfile, dRbt.bodySttle())
-                sheet.write(count, 25, assets.server_assets.username, dRbt.bodySttle())
-                sheet.write(count, 26, assets.server_assets.hostname, dRbt.bodySttle())
-                sheet.write(count, 27, assets.server_assets.port, dRbt.bodySttle())
-                sheet.write(count, 28, assets.server_assets.cpu, dRbt.bodySttle())
-                sheet.write(count, 29, assets.server_assets.raid, dRbt.bodySttle())
-                sheet.write(count, 30, assets.server_assets.cpu_number, dRbt.bodySttle())
-                sheet.write(count, 31, assets.server_assets.vcpu_number, dRbt.bodySttle())
-                sheet.write(count, 32, assets.server_assets.cpu_core, dRbt.bodySttle())
-                sheet.write(count, 33, assets.server_assets.ram_total, dRbt.bodySttle())
-                sheet.write(count, 34, assets.server_assets.kernel, dRbt.bodySttle())
-                sheet.write(count, 35, assets.server_assets.selinux, dRbt.bodySttle())
-                sheet.write(count, 36, assets.server_assets.swap, dRbt.bodySttle())
-                sheet.write(count, 37, assets.server_assets.disk_total, dRbt.bodySttle())
-                sheet.write(count, 38, assets.server_assets.system, dRbt.bodySttle())
-                sheet.write(count, 39, assets.server_assets.line, dRbt.bodySttle())
+                scount += 1
+                count = scount
+                sheet.write(scount, 22, assets.server_assets.ip, dRbt.bodySttle())
+                sheet.write(scount, 23, assets.server_assets.keyfile, dRbt.bodySttle())
+                sheet.write(scount, 24, assets.server_assets.username, dRbt.bodySttle())
+                sheet.write(scount, 25, assets.server_assets.hostname, dRbt.bodySttle())
+                sheet.write(scount, 26, assets.server_assets.port, dRbt.bodySttle())
+                sheet.write(scount, 27, assets.server_assets.cpu, dRbt.bodySttle())
+                sheet.write(scount, 28, assets.server_assets.raid, dRbt.bodySttle())
+                sheet.write(scount, 29, assets.server_assets.cpu_number, dRbt.bodySttle())
+                sheet.write(scount, 30, assets.server_assets.vcpu_number, dRbt.bodySttle())
+                sheet.write(scount, 31, assets.server_assets.cpu_core, dRbt.bodySttle())
+                sheet.write(scount, 32, assets.server_assets.ram_total, dRbt.bodySttle())
+                sheet.write(scount, 33, assets.server_assets.kernel, dRbt.bodySttle())
+                sheet.write(scount, 34, assets.server_assets.selinux, dRbt.bodySttle())
+                sheet.write(scount, 35, assets.server_assets.swap, dRbt.bodySttle())
+                sheet.write(scount, 36, assets.server_assets.disk_total, dRbt.bodySttle())
+                sheet.write(scount, 37, assets.server_assets.system, dRbt.bodySttle())
+                sheet.write(scount, 38, assets.server_assets.line, dRbt.bodySttle())
             else:
                 sheet = netSheet
-                sheet.write(count, 23, assets.network_assets.ip, dRbt.bodySttle())
-                sheet.write(count, 24, assets.network_assets.bandwidth, dRbt.bodySttle())
-                sheet.write(count, 25, assets.network_assets.port_detail, dRbt.bodySttle())
-                sheet.write(count, 26, assets.network_assets.firmware, dRbt.bodySttle())
-                sheet.write(count, 27, assets.network_assets.models_sn, dRbt.bodySttle())
-                sheet.write(count, 28, assets.network_assets.asset_level, dRbt.bodySttle())
-                sheet.write(count, 29, assets.network_assets.cpu, dRbt.bodySttle())
-                sheet.write(count, 30, assets.network_assets.stone, dRbt.bodySttle())
-                sheet.write(count, 31, assets.network_assets.configure_detail, dRbt.bodySttle())
-                sheet.write(count, 32, assets.network_assets.username, dRbt.bodySttle())
-                sheet.write(count, 33, assets.network_assets.port, dRbt.bodySttle())
+                ncount += 1
+                count = ncount
+                sheet.write(ncount, 22, assets.network_assets.ip, dRbt.bodySttle())
+                sheet.write(ncount, 23, assets.network_assets.bandwidth, dRbt.bodySttle())
+                sheet.write(ncount, 24, assets.network_assets.port_detail, dRbt.bodySttle())
+                sheet.write(ncount, 25, assets.network_assets.firmware, dRbt.bodySttle())
+                sheet.write(ncount, 26, assets.network_assets.models_sn, dRbt.bodySttle())
+                sheet.write(ncount, 27, assets.network_assets.asset_level, dRbt.bodySttle())
+                sheet.write(ncount, 28, assets.network_assets.cpu, dRbt.bodySttle())
+                sheet.write(ncount, 29, assets.network_assets.stone, dRbt.bodySttle())
+                sheet.write(ncount, 30, assets.network_assets.configure_detail, dRbt.bodySttle())
+                sheet.write(ncount, 31, assets.network_assets.username, dRbt.bodySttle())
+                sheet.write(ncount, 32, assets.network_assets.port, dRbt.bodySttle())
             sheet.write(count, 0, assets.assets_type, dRbt.bodySttle())
             sheet.write(count, 1, assets.name, dRbt.bodySttle())
-            sheet.write(count, 2, assets.sn, dRbt.bodySttle())
-            sheet.write(count, 3, str(assets.buy_time), dRbt.bodySttle())
-            sheet.write(count, 4, str(assets.expire_date), dRbt.bodySttle())
-            try:
-                sheet.write(count, 5, User.objects.get(id=assets.buy_user).username, dRbt.bodySttle())
-            except:
-                sheet.write(count, 5, assets.buy_user, dRbt.bodySttle())
+            sheet.write(count, 2, assets.put_zone, dRbt.bodySttle())
+            sheet.write(count, 3, assets.put_rack, dRbt.bodySttle())
+            sheet.write(count, 4, assets.model, dRbt.bodySttle())
+            sheet.write(count, 5, assets.sn, dRbt.bodySttle())
             sheet.write(count, 6, assets.management_ip, dRbt.bodySttle())
             sheet.write(count, 7, assets.manufacturer, dRbt.bodySttle())
-            sheet.write(count, 8, assets.model, dRbt.bodySttle())
-            sheet.write(count, 9, assets.provider, dRbt.bodySttle())
-            sheet.write(count, 10, assets.status, dRbt.bodySttle())
-            sheet.write(count, 11, assets.put_zone, dRbt.bodySttle())
-            sheet.write(count, 12, assets.project, dRbt.bodySttle())
-            sheet.write(count, 13, assets.group, dRbt.bodySttle())
-            sheet.write(count, 14, assets.business, dRbt.bodySttle())
-            count = count + 1
+            sheet.write(count, 8, str(assets.buy_time), dRbt.bodySttle())
+            sheet.write(count, 9, assets.contract, dRbt.bodySttle())
+            sheet.write(count, 10, assets.provider, dRbt.bodySttle())
+            sheet.write(count, 11, assets.service_contact, dRbt.bodySttle())
+            sheet.write(count, 12, assets.service_level, dRbt.bodySttle())
+            sheet.write(count, 13, str(assets.service_start), dRbt.bodySttle())
+            sheet.write(count, 14, assets.maintenance, dRbt.bodySttle())
+            sheet.write(count, 15, str(assets.expire_date), dRbt.bodySttle())
+            sheet.write(count, 16, assets.buy_user, dRbt.bodySttle())
+            sheet.write(count, 17, assets.status, dRbt.bodySttle())
+            sheet.write(count, 18, assets.monitor_status, dRbt.bodySttle())
+            sheet.write(count, 19, assets.group, dRbt.bodySttle())
+            sheet.write(count, 20, assets.business, dRbt.bodySttle())
+            sheet.write(count, 21, assets.project, dRbt.bodySttle())
         dRbt.save()
-        response = StreamingHttpResponse(base.file_iterator('assets_dumps.xls'))
+        response = StreamingHttpResponse(base.file_iterator(filename))
         response['Content-Type'] = 'application/octet-stream'
-        response['Content-Disposition'] = 'attachment; filename="{file_name}'.format(file_name='assets_dumps.xls')
+        response['Content-Disposition'] = 'attachment; filename={file_name}'.format(file_name=filename)
         return response
 
 
@@ -969,15 +988,15 @@ def assets_server(request):
                     except Exception, ex:
                         service = '未知'
                         logger.warn(msg="查询主机业务项目失败: {ex}".format(ex=str(ex)))
-                    if ser.assets_type in ['server', 'vmser']:
+                    if ser.assets_class in ['server', 'vmser']:
                         dataList.append({"id": ser.server_assets.id, "ip": ser.server_assets.ip, "project": project,
                                          "service": service})
-                    elif ser.assets_type in ['switch', 'route']:
+                    elif ser.assets_class in ['switch', 'route']: # 需要修改
                         dataList.append({"id": ser.network_assets.id, "ip": ser.network_assets.ip, "project": project,
                                          "service": service})
             elif request.POST.get('query') == 'group':
                 for ser in Assets.objects.filter(
-                        group=request.POST.get('id')):  # assets_type__in=['server','vmser','switch','route']):
+                        group=request.POST.get('id')):  # assets_class__in=['server','vmser','switch','route']):
                     try:
                         project = Project_Assets.objects.get(id=ser.project).project_name
                     except Exception, ex:
@@ -988,10 +1007,10 @@ def assets_server(request):
                     except Exception, ex:
                         service = '未知'
                         logger.warn(msg="查询主机业务项目失败: {ex}".format(ex=str(ex)))
-                    if ser.assets_type in ['server', 'vmser']:
+                    if ser.assets_class in ['server', 'vmser']:
                         dataList.append({"id": ser.server_assets.id, "ip": ser.server_assets.ip, "project": project,
                                          "service": service})
-                    elif ser.assets_type in ['switch', 'route']:
+                    elif ser.assets_class in ['switch', 'route']: # 需要修改
                         dataList.append({"id": ser.network_assets.id, "ip": ser.network_assets.ip, "project": project,
                                          "service": service})
             return JsonResponse({'msg': "主机查询成功", "code": 200, 'data': dataList})

@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block page-content %}
 <div id="page-wrapper">
     <div class="row">
@@ -104,7 +104,8 @@
 
 		$(document).ready(function() {
 		    $('#cronTableList').DataTable({
-		        responsive: true
+		        responsive: true,
+                "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 		    });
 		});
 

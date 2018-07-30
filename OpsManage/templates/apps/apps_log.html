@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block page-content %}
 <div id="page-wrapper">
     <div class="row">
@@ -369,13 +369,15 @@
 		$(document).ready(function() {
 		    $('#playbookTableList').DataTable({
 		        responsive: true,
-		        "order": [[5, 'asc']]
+		        "order": [[5, 'asc']],
+                "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 		    });
 		});
 
 		$(document).ready(function() {
 		    $('#modelTableList').DataTable({
-		        responsive: true
+		        responsive: true,
+                "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 		    });
 		});
 				

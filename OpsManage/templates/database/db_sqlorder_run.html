@@ -1,4 +1,4 @@
-{% extends 'index.html' %} 
+{% extends 'base.html' %}
 {% block ace-content %}
 <!-- ACE Editor -->   
 <script src="http://cdn.bootcss.com/ace/1.2.4/ace.js"></script>
@@ -144,7 +144,7 @@
 		setAceEditMode("mysql");
 	
 		$(document).ready(function() {
-		    $('#taskTableList').DataTable();
+		    $('#taskTableList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
 		} );  
 	    $(function () { 
 	    	$("[data-toggle='popover']").popover();
@@ -391,7 +391,7 @@
 		setAceEditMode("mysql"); 
 	
 		$(document).ready(function() {
-		    $('#taskTableList').DataTable();
+		    $('#taskTableList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
 		} );  
 	    $(function () { 
 	    	$("[data-toggle='popover']").popover();

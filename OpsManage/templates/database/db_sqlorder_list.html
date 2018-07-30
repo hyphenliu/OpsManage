@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block ace-content %} 
 <style type="text/css">
 	.row {
@@ -235,7 +235,7 @@
 
     
     $(document).ready(function() {
-        $('#deployTableList').DataTable();
+        $('#deployTableList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
     } );    
        
     

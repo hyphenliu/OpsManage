@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block ace-content %}
 <style type="text/css"> 
 	td.details-control {
@@ -262,7 +262,8 @@
 	            { "data": "激活状态" },
 	            { "data": "操作" }       
 	        ],
-	        "order": [[2, 'asc']]
+	        "order": [[2, 'asc']],
+            "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 	    } );    
 	    
 	    // Add event listener for opening and closing details

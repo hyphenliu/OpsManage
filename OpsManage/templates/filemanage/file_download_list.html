@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block ace-content %}
 <!-- ACE Editor -->   
 <link href="/static/dist/css/bootstrap-multiselect.css" rel="stylesheet">
@@ -456,7 +456,8 @@ function format ( data ) {
 	            { "data": "申请时间" },
 	            { "data": "操作" }       
 	        ],
-	        "order": [[6, 'asc']]
+	        "order": [[6, 'asc']],
+            "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 	    } );    
 	    
 	    // Add event listener for opening and closing details

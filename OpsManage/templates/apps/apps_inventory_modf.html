@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block ace-content %}
 <!-- ACE Editor -->   
 <script src="http://cdn.bootcss.com/ace/1.2.4/ace.js"></script>
@@ -317,7 +317,8 @@ function format ( data ) {
 	            { "data": "添加日期"},
 	            { "data": "操作" }       
 	        ],
-	        "order": [[5, 'asc']]
+	        "order": [[5, 'asc']],
+            "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 	    } );    
 	    
 	    // Add event listener for opening and closing details

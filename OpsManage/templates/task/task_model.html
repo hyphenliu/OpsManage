@@ -1,4 +1,4 @@
-{% extends 'index.html' %} {% block ace-content %} {% endblock %}
+{% extends 'base.html' %} {% block ace-content %} {% endblock %}
 {%block page-content %}
 <div id="page-wrapper">
 
@@ -677,13 +677,13 @@
 <script type="text/javascript">
 	$(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii:ss'});
 	$(document).ready(function() {
-	    $('#taskTableList').DataTable();
+	    $('#taskTableList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
 	} );  
 	$(document).ready(function() {
-	    $('#crontabList').DataTable();
+	    $('#crontabList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
 	} ); 
 	$(document).ready(function() {
-	    $('#intervalList').DataTable();
+	    $('#intervalList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
 	} ); 	
     $(function () { 
     	$("[data-toggle='popover']").popover();

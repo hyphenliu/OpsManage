@@ -1,4 +1,4 @@
-{% extends 'index.html' %} 
+{% extends 'base.html' %}
 {% block ace-content %} 
 <!-- Search -->   
 <link rel="stylesheet" href="/static/dist/css/jquery-ui.min.css">
@@ -294,7 +294,7 @@
     }	
 
 	$(document).ready(function() {
-	    $('#taskTableList').DataTable();
+	    $('#taskTableList').DataTable({"language": {"url": "../../../static/js/dataTables-zh_cn.json"}});
 	} ); 
 
 	function deleteSqlOrder(obj,id){

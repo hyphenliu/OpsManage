@@ -1,4 +1,4 @@
-{% extends 'index.html' %}
+{% extends 'base.html' %}
 {% block ace-content %}
 <!-- ACE Editor -->   
 <script src="http://cdn.bootcss.com/ace/1.2.4/ace.js"></script>
@@ -450,7 +450,8 @@ function addInventory(obj) {
 	            { "data": "添加日期"},
 	            { "data": "操作" }       
 	        ],
-	        "order": [[ 0, 'desc' ], [ 5, 'desc' ]]
+	        "order": [[ 0, 'desc' ], [ 5, 'desc' ]],
+            "language": {"url": "../../../static/js/dataTables-zh_cn.json"}
 	    } );    
 	    
 	    // Add event listener for opening and closing details
