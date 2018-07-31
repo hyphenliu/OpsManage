@@ -65,7 +65,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-12 control-label">维保服务商:</label>
                                     <div class="col-sm-12">
-                                        <select class="form-control" id="selProvider">
+                                        <select class="form-control selectpicker" data-live-search="true" data-size="5" id="selProvider">
                                             <option selected="selected" value="">请选择一个类型</option>
                                             {% for m in providerList %}
                                                 <option value="{{ m }}" name="provider">{{ m }}</option>
@@ -79,7 +79,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-12 control-label">设备型号:</label>
                                     <div class="col-sm-12">
-                                        <select class="form-control" id="selModel">
+                                        <select class="form-control selectpicker" data-live-search="true" data-size="5" id="selModel">
                                             <option selected="selected" value="">请选择一个类型</option>
                                             {% for m in modelList %}
                                                 <option value="{{ m }}" name="model">{{ m }}</option>

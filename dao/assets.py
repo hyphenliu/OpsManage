@@ -11,11 +11,11 @@ class AssetsSource(object):
         serverList = []
         for assets in Assets.objects.filter(assets_class__in=["server","vmser","switch","route"]):
             try:
-                service =  Service_Assets.objects.get(id=assets.business).service_name
+                service =  assets.business
             except:
                 service = '未知'
             try:
-                project =  Project_Assets.objects.get(id=assets.project).project_name
+                project =  assets.project
             except:
                 project = '未知'                
             if hasattr(assets,'server_assets'):

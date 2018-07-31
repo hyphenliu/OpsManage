@@ -429,14 +429,17 @@ def assets_import(request):
             if not Group.objects.get(name=group).count():
                 resultStr += '使用部门名【%s】不存在；' % group
                 errFlag = True
-            if not Project_Assets.objects.get(project_name=business).count():
-                resultStr += '业务系统【%s】不存在；' % business
+            if not Project_Assets.objects.get(project_name=project).count():
+                resultStr += '业务系统【%s】不存在；' % project
                 errFlag = True
-
-            if not Service_Assets.objects.get(Service_Assets=project).count():
+            if not Service_Assets.objects.get(service_name=business).count():
+                resultStr += '业务项目【%s】不存在；' % business
                 errFlag = True
-            if not Project_Assets.objects.get(project_name=business).count():
-                resultStr += '业务系统【%s】不存在；' % business
+            if not Contract_Assets.objects.get(contract_name=contract).count():
+                resultStr += '资产合同【%s】不存在；' % contract
+                errFlag = True
+            if not Maintenance_Assets.objects.get(maintenance_name=maintenance).count():
+                resultStr += '维保合同【%s】不存在；' % maintenance
                 errFlag = True
 
         dataList = getAssetsData(fname=filename)
@@ -618,7 +621,7 @@ def assets_search(request):
             except:
                 pass
 
-        if data.has_key('ip'):
+        if data.has_key('ip'): # 不能按实际录入的ip地址查找 hyphen.liu
             for ds in NetworkCard_Assets.objects.filter(ip=data.get('ip')):
                 if ds.assets not in assetsList: assetsList.append(ds.assets)
 
@@ -673,11 +676,13 @@ def assets_search(request):
             for p in baseAssets.get('project'):
                 if p.project_name == a.project:
                     project = '''{project}'''.format(project=p.project_name)
+                    break
                 else:
                     project = '''[{project}]<li><code>不在</code></li>基础配置表[业务系统]里'''.format(project=a.project)
             for s in baseAssets.get('service'):
                 if s.service_name == a.business:
                     service = '''{service}'''.format(service=s.service_name)
+                    break
                 else:
                     service = '''[{service}]<li><code>不在</code></li>基础配置表[业务项目]里'''.format(service=a.business)
             status = '''<button type="button" class="btn btn-outline btn-default">{status}</button>'''.format(
@@ -690,6 +695,7 @@ def assets_search(request):
             for z in baseAssets.get('zone'):
                 if z.zone_name == a.put_zone:
                     put_zone = '''{zone_name}'''.format(zone_name=z.zone_name)
+                    break
                 else:
                     put_zone = '''[{zone_name}]<li><code>不在</code></li>基础配置表[机房位置]里'''.format(zone_name=a.put_zone)
             try:
@@ -960,8 +966,8 @@ def assets_dumps(request):
             sheet.write(count, 17, assets.status, dRbt.bodySttle())
             sheet.write(count, 18, assets.monitor_status, dRbt.bodySttle())
             sheet.write(count, 19, assets.group, dRbt.bodySttle())
-            sheet.write(count, 20, assets.business, dRbt.bodySttle())
-            sheet.write(count, 21, assets.project, dRbt.bodySttle())
+            sheet.write(count, 20, assets.project, dRbt.bodySttle())
+            sheet.write(count, 21, assets.business, dRbt.bodySttle())
         dRbt.save()
         response = StreamingHttpResponse(base.file_iterator(filename))
         response['Content-Type'] = 'application/octet-stream'
@@ -991,7 +997,7 @@ def assets_server(request):
                     if ser.assets_class in ['server', 'vmser']:
                         dataList.append({"id": ser.server_assets.id, "ip": ser.server_assets.ip, "project": project,
                                          "service": service})
-                    elif ser.assets_class in ['switch', 'route']: # 需要修改
+                    elif ser.assets_class in ['switch', 'route']:  # 需要修改
                         dataList.append({"id": ser.network_assets.id, "ip": ser.network_assets.ip, "project": project,
                                          "service": service})
             elif request.POST.get('query') == 'group':
@@ -1010,7 +1016,7 @@ def assets_server(request):
                     if ser.assets_class in ['server', 'vmser']:
                         dataList.append({"id": ser.server_assets.id, "ip": ser.server_assets.ip, "project": project,
                                          "service": service})
-                    elif ser.assets_class in ['switch', 'route']: # 需要修改
+                    elif ser.assets_class in ['switch', 'route']:  # 需要修改
                         dataList.append({"id": ser.network_assets.id, "ip": ser.network_assets.ip, "project": project,
                                          "service": service})
             return JsonResponse({'msg': "主机查询成功", "code": 200, 'data': dataList})

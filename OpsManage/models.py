@@ -31,8 +31,8 @@ class Assets(models.Model):
     status = models.CharField(max_length=100, blank=True, null=True, verbose_name='资产状态')
     monitor_status = models.CharField(max_length=100, blank=True, null=True, verbose_name='监控状态')  # hyphen add 20180714
     group = models.CharField(max_length=100, null=True, verbose_name='使用部门')
-    business = models.CharField(max_length=100, null=True, verbose_name='业务系统')
-    project = models.CharField(max_length=200, null=True, verbose_name='业务项目')
+    business = models.CharField(max_length=100, null=True, verbose_name='业务项目')
+    project = models.CharField(max_length=200, null=True, verbose_name='业务系统')
     host_vars = models.TextField(blank=True, null=True, verbose_name='ansible主机变量')
     mark = models.TextField(blank=True, null=True, verbose_name='资产标示')
     create_date = models.DateTimeField(auto_now_add=True)

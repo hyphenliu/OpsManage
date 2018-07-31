@@ -63,38 +63,39 @@
                         <li><a href="/cron_list/1/">任务列表</a></li>
                         <li><a href="/cron_log/1/">操作日志</a></li>
                     </ul> <!-- /.nav-second-level --></li>
-                {#						<li><a href="#"><i class="fa fa-sitemap fa-fw"></i> 应用部署<span#}
-                {#								class="fa arrow"></span></a>#}
-                {#							<ul class="nav nav-second-level">#}
-                {#								<li><a href="/apps/inventory/">动态资产</a></li>#}
-                {#								<li><a href="/apps/model/">运行模块</a></li>#}
-                {#								<li><a href="#">脚本工具<span class="fa arrow"></span></a>#}
-                {#									<ul class="nav nav-third-level">#}
-                {#										<li><a href="/apps/script/online/">在线添加</a></li>#}
-                {#										<li><a href="/apps/script/list/">脚本列表</a></li>#}
-                {#									</ul></li>#}
-                {#								<li><a href="#">剧本配置<span class="fa arrow"></span></a>#}
-                {#									<ul class="nav nav-third-level">										#}
-                {#										<li><a href="/apps/playbook/upload/">上传剧本</a></li>#}
-                {#										<li><a href="/apps/playbook/online/">在线编辑</a></li>#}
-                {#										<li><a href="/apps/">剧本列表</a></li>#}
-                {#										{% if user.is_superuser %}#}
-                {#										<li><a href="/roles/">剧本管理</a></li>#}
-                {#										{% endif %}#}
-                {#									</ul> <!-- /.nav-third-level --></li>#}
-                {#								<li><a href="/apps/log/">操作日志</a></li>#}
-                {#							</ul> <!-- /.nav-second-level --></li>#}
-                {#						<li><a href="#"><i class="fa fa-database fa-fw"></i> 数据管理<span#}
-                {#								class="fa arrow"></span></a>#}
-                {#							<ul class="nav nav-second-level">#}
-                {#								<li><a href="#">MySQL<span class="fa arrow"></span></a>#}
-                {#									<ul class="nav nav-third-level">#}
-                {#										<li><a href="/db/config/">基础配置</a></li>#}
-                {#										<li><a href="/db/sql/ops/">管理入口</a></li>											#}
-                {#									</ul>#}
-                {#								</li>														#}
-                {#								<li><a href="/db/sql/logs/1/">操作日志</a></li>#}
-                {#							</ul> <!-- /.nav-second-level --></li>							#}
+                <li><a href="#"><i class="fa fa-sitemap fa-fw"></i> 应用部署<span
+                        class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="/apps/inventory/">动态资产</a></li>
+                        <li><a href="/apps/model/">运行模块</a></li>
+                        <li><a href="#">脚本工具<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li><a href="/apps/script/online/">在线添加</a></li>
+                                <li><a href="/apps/script/list/">脚本列表</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">剧本配置<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li><a href="/apps/playbook/upload/">上传剧本</a></li>
+                                <li><a href="/apps/playbook/online/">在线编辑</a></li>
+                                <li><a href="/apps/">剧本列表</a></li>
+                                {% if user.is_superuser %}
+                                    <li><a href="/roles/">剧本管理</a></li>
+                                {% endif %}
+                            </ul> <!-- /.nav-third-level --></li>
+                        <li><a href="/apps/log/">操作日志</a></li>
+                    </ul> <!-- /.nav-second-level --></li>
+                <li><a href="#"><i class="fa fa-database fa-fw"></i> 数据管理<span
+                        class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="#">MySQL<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li><a href="/db/config/">基础配置</a></li>
+                                <li><a href="/db/sql/ops/">管理入口</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="/db/sql/logs/1/">操作日志</a></li>
+                    </ul> <!-- /.nav-second-level --></li>
                 {% if user.is_superuser %}
                     <li><a href="#"><i class="fa fa-tasks fa-fw"></i> 任务调度<span
                             class="fa arrow"></span></a>
@@ -109,19 +110,20 @@
                         <li><a href="/wiki/add/">新建文档</a></li>
                         <li><a href="/wiki/index/">文档列表</a></li>
                     </ul> <!-- /.nav-second-level --></li>
-                {#						<li><a href="#"><i class="fa  fa-ticket fa-fw"></i> 工单系统<span#}
-                {#								class="fa arrow"></span></a>#}
-                {#							<ul class="nav nav-second-level">#}
-                {#								<li><a href="#">工单申请<span class="fa arrow"></span></a>#}
-                {#									<ul class="nav nav-third-level">#}
-                {#										<li><a href="/order/deploy/apply/">代码部署</a></li>#}
-                {#										<li><a href="/order/sql/apply/">上线SQL</a></li>#}
-                {#										<li><a href="/order/file/upload/list/1/">文件分发</a></li>#}
-                {#										<li><a href="/order/file/download/list/1/">文件下载</a></li>#}
-                {#									</ul></li>#}
-                {#								<li><a href="/order/list/1/">工单列表</a></li>#}
-                {#								<li><a href="/order/search/">工单查询</a></li>#}
-                {#							</ul> <!-- /.nav-second-level --></li>													#}
+                <li><a href="#"><i class="fa  fa-ticket fa-fw"></i> 工单系统<span
+                        class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="#">工单申请<span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                <li><a href="/order/deploy/apply/">代码部署</a></li>
+                                <li><a href="/order/sql/apply/">上线SQL</a></li>
+                                <li><a href="/order/file/upload/list/1/">文件分发</a></li>
+                                <li><a href="/order/file/download/list/1/">文件下载</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="/order/list/1/">工单列表</a></li>
+                        <li><a href="/order/search/">工单查询</a></li>
+                    </ul> <!-- /.nav-second-level --></li>
                 <li><a href="/config"><i class="fa fa-wrench fa-fw"></i>
                     全局配置</a></li>
                 <li><a href="#"><i class="fa fa-group "></i> 用户中心<span

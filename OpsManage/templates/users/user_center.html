@@ -307,7 +307,7 @@
                                                         </td>
                                                         <td class="text-center">
                                                             {% for s in baseAssets.service %}
-                                                                {% if s.id == a.business %}
+                                                                {% if s.service_name == a.business %}
                                                                     {{ s.service_name }}
                                                                 {% endif %}
                                                             {% endfor %}

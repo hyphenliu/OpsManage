@@ -24,7 +24,7 @@
 											<div class="form-group">
 												 <label class="col-sm-2 control-label">服务器</label>
 												 <div class="col-sm-6">
-												   <select class="form-control" name="cron_server"  >
+												   <select class="form-control selectpicker" data-live-search="true" data-size="5" name="cron_server"  >
 												   		<option selected="selected" value="">请选择一台主机</option>
 															{% for ds in serverList %}
 																<option value="{{ds.id}}" name="cron_server">{{ds.ip}}</option>
