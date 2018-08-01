@@ -30,8 +30,8 @@
 				   <div class="row" >
 				      <div class="col-xs-6 col-sm-3">
 							<div class="form-group">
-								<label class="col-sm-3 control-label">任务名称:</label>
-								<div class="col-sm-8">
+								<label class="col-sm-12 control-label">任务名称:</label>
+								<div class="col-sm-12">
 									 <select class="form-control" id="selName" >
 									 	<option selected="selected" value="">请选择一个名称</option>
 									 	{% for task in regTaskList %}
@@ -43,8 +43,8 @@
 				      </div>
 				      <div class="col-xs-6 col-sm-3">
 							<div class="form-group">
-								<label class="col-sm-3 control-label">任务状态:</label>
-								<div class="col-sm-8">
+								<label class="col-sm-12 control-label">任务状态:</label>
+								<div class="col-sm-12">
 									 <select class="form-control" id="selstate" >
 									 	<option selected="selected" value="">请选择一个类型</option>
 									 	<option value="SUCCESS" name="state">SUCCESS</option>	
@@ -61,8 +61,8 @@
 				
 				      <div class="col-xs-6 col-sm-3">
 							<div class="form-group">
-								<label class="col-sm-3 control-label">Worker:</label>
-								<div class="col-sm-8">
+								<label class="col-sm-12 control-label">Worker:</label>
+								<div class="col-sm-12">
 									 <select class="form-control" id="worker_id" >
 									 	<option selected="selected" value="">请选择一个类型</option>
 									 	{% for w in workList %}
@@ -75,8 +75,8 @@
 				
 				      <div class="col-xs-6 col-sm-3">
 							<div class="form-group">
-								<label class="col-sm-3 control-label">执行时间:</label>
-								<div class="col-sm-8">
+								<label class="col-sm-12 control-label">执行时间:</label>
+								<div class="col-sm-12">
 									<input type="text" id="runtime" name="runtime" style="border:0; color:#f6931f; font-weight:bold;">
 									<div id="runtime-range"></div>
 								</div>

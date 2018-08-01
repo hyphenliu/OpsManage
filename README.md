@@ -259,3 +259,110 @@ Ansible部署功能：
 
 用户管理：
 ![image](https://github.com/welliamcao/OpsManage/blob/master/demo_imgs/user.gif)
+
+===============================================================================================
+Hyphen.Liu Added
+1. 安装MegaCli
+下载地址：https://raw.githubusercontent.com/crazy-zhangcong/tools/master/MegaCli8.07.10.tar.gz
+# tar -zxf MegaCli8.07.10.tar.gz
+# cd MegaCli8.07.10/Linux/
+# rpm -ivh Lib_Utils-1.00-09.noarch.rpm
+# rpm -ivh MegaCli-8.02.21-1.noarch.rpm
+# ln -s /opt/MegaRAID/MegaCli/MegaCli64 /usr/local/bin/MegaCli
+# MegaCli -v
+
+2. OpsManage如何收集物理服务器的内存与硬盘信息
+2.1、编辑ansible配置文件，修改配置，没有这个目录则新建。 /etc/ansible/ansible.cfg
+[defaults]
+library        = /usr/share/ansible/my_modules/
+
+2.2、新建modules文件
+# cd /usr/share/ansible/my_modules/
+[root@localhost my_modules]# cat crawHw
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import subprocess
+import os
+import sys
+import json
+
+def Mem():
+    memData = []
+    result = subprocess.Popen("dmidecode -t 17|awk '/(Manufacturer|Size|Serial Number)/'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    count = 0
+    dList = []
+    for line in result.stdout.readlines():
+        ds = line.replace('\n','').lstrip()
+        dList.append(ds)
+    new_count = 0
+    for ds in dList:
+        data = {}
+        if count > len(dList)-1:break
+        try:
+            size = dList[count].split(":")[1].lstrip()
+            manufacturer = dList[count+1].split(":")[1].lstrip()
+            serial = dList[count+2].split(":")[1].lstrip()
+        except:
+            return False
+        if not size.startswith("No"):
+            data['slot'] = new_count
+            data['size'] = size
+            data['manufacturer'] = manufacturer
+            data['serial'] = serial
+            memData.append(data)
+        count = count + 3
+        new_count = new_count + 1
+    return memData
+
+def Disk():
+    diskData = []
+    result = subprocess.Popen("/opt/MegaRAID/MegaCli/MegaCli64 -PDlist -aALL|awk '/(Slot Number|Raw Size|Firmware state|Inquiry Data)/'", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    count = 0
+    dList = []
+    for line in result.stdout.readlines():
+        ds = line.replace('\n','').lstrip()
+        dList.append(ds)
+    for ds in dList:
+        data = {}
+        if count > len(dList)-1:break
+        try:
+            slot = dList[count].split(":")[1].lstrip()
+            sizeList = dList[count+1].split(":")[1].split(" ")
+            while '' in sizeList:
+                sizeList.remove('')
+            statusList = dList[count+2].split(":")[1].split(" ")
+            while '' in statusList:
+                statusList.remove('')
+        except:
+            return False
+        try:
+            inquiry = dList[count+3].split(":")[1].split(" ")
+            while '' in inquiry:
+                inquiry.remove('')
+            serial = inquiry[-1]
+            model =   inquiry[-2]
+            manufacturer = inquiry[-3]
+        except:
+            manufacturer = 'unknown'
+        data['slot'] = slot
+        data['size'] = sizeList[0] + 'GB'
+        data['status'] = statusList[0].replace(',','')
+        data['manufacturer'] = manufacturer
+        data['serial'] = serial
+        data['model'] = model
+        diskData.append(data)
+        count = count + 4
+    return diskData
+
+print json.dumps({
+         "changed" : False,
+         "ansible_facts" : {
+         "ansible_mem_detailed_info" : Mem(),
+         "ansible_disk_detailed_info" : Disk()
+         }
+      })
+sys.exit(0)
+
+if __name__ == '__main__':
+    #main()
+    Disk()

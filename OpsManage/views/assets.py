@@ -279,7 +279,7 @@ def assets_facts(request, args=None):
             else:
                 return JsonResponse({'msg': "数据更新失败-请检查Ansible配置", "code": 400})
 
-        elif genre == 'crawHw':
+        elif genre == 'crawHw': # 非ansible自带库
             try:
                 server_assets = Server_Assets.objects.get(id=server_id)
                 assets = Assets.objects.get(id=server_assets.assets_id)
@@ -290,7 +290,7 @@ def assets_facts(request, args=None):
                 else:
                     resource = [{"ip": server_assets.ip, "port": server_assets.port, "username": server_assets.username,
                                  "password": server_assets.passwd, "sudo_passwd": server_assets.sudo_passwd}]
-            except Exception, e:
+            except Exception, ex:
                 logger.error(msg="更新硬件信息失败: {ex}".format(ex=ex))
                 return JsonResponse({'msg': "数据更新失败-查询不到该主机资料~", "code": 502})
             ANS = ANSRunner(resource)
