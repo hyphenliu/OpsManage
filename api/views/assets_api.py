@@ -281,64 +281,6 @@ def zone_detail(request, id, format=None):
 
 
 @api_view(['GET', 'POST'])
-@permission_required('OpsManage.can_add_line_assets', raise_exception=True)
-def line_list(request, format=None):
-    """
-    List all order, or create a server assets order.
-    """
-    if request.method == 'GET':
-        snippets = Line_Assets.objects.all()
-        serializer = serializers.LineSerializer(snippets, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = serializers.LineSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="添加出口线路：{line_name}".format(line_name=request.data.get("line_name")),
-                               type="line", id=serializer.data.get('id'))
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_required('OpsManage.can_change_line_assets', raise_exception=True)
-def line_detail(request, id, format=None):
-    """
-    Retrieve, update or delete a server assets instance.
-    """
-    try:
-        snippet = Line_Assets.objects.get(id=id)
-    except Line_Assets.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = serializers.LineSerializer(snippet)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        serializer = serializers.LineSerializer(snippet, data=request.data)
-        old_name = snippet.line_name
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="修改出口线路类型：{old_name} -> {line_name}".format(old_name=old_name,
-                                                                                   line_name=request.data.get(
-                                                                                       "line_name")), type="line",
-                               id=id)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        if not request.user.has_perm('OpsManage.can_delete_line_assets'):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        snippet.delete()
-        recordAssets.delay(user=str(request.user), content="删除出口线路：{line_name}".format(line_name=snippet.line_name),
-                           type="line", id=id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['GET', 'POST'])
 @permission_required('OpsManage.can_add_raid_assets', raise_exception=True)
 def raid_list(request, format=None):
     """
@@ -518,304 +460,63 @@ def contract_detail(request, id, format=None):
 
 
 @api_view(['GET', 'POST'])
-@permission_required('OpsManage.can_add_maintenance_assets', raise_exception=True)
-def maintenance_list(request, format=None):
+@permission_required('OpsManage.can_add_contract_pay', raise_exception=True)
+def contract_pay_list(request, format=None):  # 需要后期修改
     """
     List all order, or create a server assets order.
     """
     if request.method == 'GET':
-        snippets = Maintenance_Assets.objects.all()
-        serializer = serializers.MaintainanceSerializer(snippets, many=True)
+        snippets = Contract_Pay.objects.all()
+        serializer = serializers.ContractPaySerializer(snippets, many=True)
         return Response(serializer.data)
     elif request.method == 'POST':
-        serializer = serializers.MaintainanceSerializer(data=request.data)
+        serializer = serializers.ContractPaySerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             recordAssets.delay(user=str(request.user),
-                               content="添加维保合同：{maintenance_name}".format(
-                                   maintenance_name=request.data.get("maintenance_name")),
-                               type="maintenance", id=serializer.data.get('id'))
+                               content="添加合同支付信息：{contract_name}".format(
+                                   contract_name=request.data.get("contract_name")),
+                               type="contract_pay", id=serializer.data.get('id'))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_required('OpsManage.can_change_maintenance_assets', raise_exception=True)
-def maintenance_detail(request, id, format=None):
+def contract_pay_detail(request, id, format=None):
     """
     Retrieve, update or delete a server assets instance.
     """
     try:
-        snippet = Maintenance_Assets.objects.get(id=id)
-    except Maintenance_Assets.DoesNotExist:
+        snippet = Contract_Pay.objects.get(id=id)
+    except Contract_Pay.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = serializers.MaintainanceSerializer(snippet)
+        serializer = serializers.ContractPaySerializer(snippet)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        old_name = snippet.maintenance_name
-        serializer = serializers.MaintainanceSerializer(snippet, data=request.data)
+        old_name = snippet.contract_name
+        serializer = serializers.ContractPaySerializer(snippet, data=request.data)
         if serializer.is_valid():
             serializer.save()
             recordAssets.delay(user=str(request.user),
-                               content="修改维保合同信息：{old_name} -> {maintenance_name}".format(old_name=old_name,
-                                                                                          maintenance_name=request.data.get(
-                                                                                              "maintenance_name")),
-                               type="maintenance",
+                               content="修改合同支付信息：{old_name} -> {contract_name}".format(old_name=old_name,
+                                                                                       contract_name=request.data.get(
+                                                                                           "contract_name")),
+                               type="contract_pay",
                                id=id)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
-        if not request.user.has_perm('OpsManage.can_delete_maintenance_assets'):
+        if not request.user.has_perm('OpsManage.can_delete_contract_name'):
             return Response(status=status.HTTP_403_FORBIDDEN)
         snippet.delete()
         recordAssets.delay(user=str(request.user),
-                           content="删除维保合同信息：{maintenance_name}".format(maintenance_name=snippet.maintenance_name),
-                           type="maintenance", id=id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['GET', 'POST'])
-@permission_required('OpsManage.can_add_provider_assets', raise_exception=True)
-def provider_list(request, format=None):
-    """
-    List all order, or create a server assets order.
-    """
-    if request.method == 'GET':
-        snippets = Provider_Assets.objects.all()
-        serializer = serializers.ProviderSerializer(snippets, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = serializers.ProviderSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="添加设备/维保厂商：{provider_name}".format(
-                                   provider_name=request.data.get("provider_name")),
-                               type="provider", id=serializer.data.get('id'))
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_required('OpsManage.can_change_provider_assets', raise_exception=True)
-def provider_detail(request, id, format=None):
-    """
-    Retrieve, update or delete a server assets instance.
-    """
-    try:
-        snippet = Provider_Assets.objects.get(id=id)
-    except Provider_Assets.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = serializers.ProviderSerializer(snippet)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        old_name = snippet.provider_name
-        serializer = serializers.ProviderSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="修改设备/维保厂商信息：{old_name} -> {provider_name}".format(old_name=old_name,
-                                                                                          provider_name=request.data.get(
-                                                                                              "provider_name")),
-                               type="provider",
-                               id=id)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        if not request.user.has_perm('OpsManage.can_delete_provider_assets'):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        snippet.delete()
-        recordAssets.delay(user=str(request.user),
-                           content="删除设备/维保厂商：{provider_name}".format(provider_name=snippet.provider_name),
-                           type="provider", id=id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET', 'POST'])
-@permission_required('OpsManage.can_add_status_assets', raise_exception=True)
-def status_list(request, format=None):
-    """
-    List all order, or create a server assets order.
-    """
-    if request.method == 'GET':
-        snippets = Status_Assets.objects.all()
-        serializer = serializers.StatusSerializer(snippets, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = serializers.StatusSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="添加设备状态信息：{status_name}".format(
-                                   status_name=request.data.get("status_name")),
-                               type="status", id=serializer.data.get('id'))
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_required('OpsManage.can_change_status_assets', raise_exception=True)
-def status_detail(request, id, format=None):
-    """
-    Retrieve, update or delete a server assets instance.
-    """
-    try:
-        snippet = Status_Assets.objects.get(id=id)
-    except Status_Assets.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = serializers.StatusSerializer(snippet)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        old_name = snippet.status_name
-        serializer = serializers.StatusSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="修改设备状态信息信息：{old_name} -> {status_name}".format(old_name=old_name,
-                                                                                          status_name=request.data.get(
-                                                                                              "status_name")),
-                               type="status",
-                               id=id)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        if not request.user.has_perm('OpsManage.can_delete_status_assets'):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        snippet.delete()
-        recordAssets.delay(user=str(request.user),
-                           content="删除设备状态信息：{status_name}".format(status_name=snippet.status_name),
-                           type="status", id=id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET', 'POST'])
-@permission_required('OpsManage.can_add_monitor_assets', raise_exception=True)
-def monitor_list(request, format=None):
-    """
-    List all order, or create a server assets order.
-    """
-    if request.method == 'GET':
-        snippets = Monitor_Assets.objects.all()
-        serializer = serializers.MonitorSerializer(snippets, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = serializers.MonitorSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="添加监控状态信息：{monitor_name}".format(
-                                   monitor_name=request.data.get("monitor_name")),
-                               type="monitor", id=serializer.data.get('id'))
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_required('OpsManage.can_change_monitor_assets', raise_exception=True)
-def monitor_detail(request, id, format=None):
-    """
-    Retrieve, update or delete a server assets instance.
-    """
-    try:
-        snippet = Monitor_Assets.objects.get(id=id)
-    except Monitor_Assets.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = serializers.MonitorSerializer(snippet)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        old_name = snippet.monitor_name
-        serializer = serializers.MonitorSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="修改监控状态信息信息：{old_name} -> {monitor_name}".format(old_name=old_name,
-                                                                                          monitor_name=request.data.get(
-                                                                                              "monitor_name")),
-                               type="monitor",
-                               id=id)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        if not request.user.has_perm('OpsManage.can_delete_monitor_assets'):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        snippet.delete()
-        recordAssets.delay(user=str(request.user),
-                           content="删除监控状态信息：{monitor_name}".format(monitor_name=snippet.monitor_name),
-                           type="monitor", id=id)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-@api_view(['GET', 'POST'])
-@permission_required('OpsManage.can_add_level_assets', raise_exception=True)
-def level_list(request, format=None):
-    """
-    List all order, or create a server assets order.
-    """
-    if request.method == 'GET':
-        snippets = Level_Assets.objects.all()
-        serializer = serializers.LevelSerializer(snippets, many=True)
-        return Response(serializer.data)
-    elif request.method == 'POST':
-        serializer = serializers.LevelSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="添加设备级别：{level_name}".format(
-                                   level_name=request.data.get("level_name")),
-                               type="level", id=serializer.data.get('id'))
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['GET', 'PUT', 'DELETE'])
-@permission_required('OpsManage.can_change_level_assets', raise_exception=True)
-def level_detail(request, id, format=None):
-    """
-    Retrieve, update or delete a server assets instance.
-    """
-    try:
-        snippet = Level_Assets.objects.get(id=id)
-    except Level_Assets.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'GET':
-        serializer = serializers.LevelSerializer(snippet)
-        return Response(serializer.data)
-
-    elif request.method == 'PUT':
-        old_name = snippet.level_name
-        serializer = serializers.LevelSerializer(snippet, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            recordAssets.delay(user=str(request.user),
-                               content="修改设备级别信息：{old_name} -> {level_name}".format(old_name=old_name,
-                                                                                          level_name=request.data.get(
-                                                                                              "level_name")),
-                               type="level",
-                               id=id)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    elif request.method == 'DELETE':
-        if not request.user.has_perm('OpsManage.can_delete_level_assets'):
-            return Response(status=status.HTTP_403_FORBIDDEN)
-        snippet.delete()
-        recordAssets.delay(user=str(request.user),
-                           content="删除设备级别：{level_name}".format(level_name=snippet.level_name),
-                           type="level", id=id)
+                           content="删除合同支付信息：{contract_name}".format(maintenance_name=snippet.contract_name),
+                           type="contract_pay", id=id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 

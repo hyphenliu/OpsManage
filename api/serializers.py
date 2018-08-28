@@ -46,12 +46,6 @@ class ZoneSerializer(serializers.ModelSerializer):
         fields = ('id', 'zone_name', 'zone_contact', 'zone_number')
 
 
-class LineSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Line_Assets
-        fields = ('id', 'line_name')
-
-
 class RaidSerializer(serializers.ModelSerializer):
     class Meta:
         model = Raid_Assets
@@ -68,37 +62,17 @@ class TypeSerializer(serializers.ModelSerializer):
 class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract_Assets
-        fields = ('id', 'contract_name', 'contract_number')
+        fields = ('id', 'contract_name', 'contract_number', 'contract_type', 'contract_provider', 'contract_contactor',
+                  'contract_contact', 'contract_start', 'contract_expire', 'contract_pay', 'contract_level')
 
 
-class MaintainanceSerializer(serializers.ModelSerializer):
+class ContractPaySerializer(serializers.ModelSerializer):
+    contract_name = serializers.CharField(source='contract.contract_name', read_only=True)
+    contract_id = serializers.IntegerField(source='contract.id', read_only=True)
+
     class Meta:
-        model = Maintenance_Assets
-        fields = ('id', 'maintenance_name', 'maintenance_number')
-
-
-class ProviderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Provider_Assets
-        fields = ('id', 'provider_name')
-
-
-class LevelSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Level_Assets
-        fields = ('id', 'level_name')
-
-
-class StatusSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Status_Assets
-        fields = ('id', 'status_name')
-
-
-class MonitorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Monitor_Assets
-        fields = ('id', 'monitor_name')
+        model = Contract_Pay
+        fields = ('id', 'contract_id', 'contract_name', 'paid_frequency', 'paid_date')
 
 
 # hyphen add end 20180714
@@ -120,11 +94,8 @@ class CronSerializer(serializers.ModelSerializer):
 class AssetsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assets
-        fields = ('id', 'assets_class','assets_type', 'name', 'sn', 'buy_time', 'expire_date',
-                  'buy_user', 'management_ip', 'manufacturer', 'provider', 'mark',
-                  'model', 'status', 'put_zone', 'put_rack', 'service_start', 'contract',
-                  'maintenance', 'service_level', 'service_contact', 'monitor_status', 'group',
-                  'business', 'project')
+        fields = ('id', 'assets_class', 'assets_type', 'put_zone', 'put_rack', 'model', 'name', 'sn', 'manufacturer',
+                  'enter_time', 'contract_buy', 'contract_service', 'buy_user', 'status', 'monitor_status', 'mark')
 
 
 class AssetsLogsSerializer(serializers.ModelSerializer):
@@ -189,11 +160,10 @@ class ServerSerializer(serializers.ModelSerializer):
     #     keyfile = serializers.FileField(max_length=None, use_url=True)
     class Meta:
         model = Server_Assets
-        fields = ('id', 'ip', 'hostname', 'username', 'port', 'passwd',
-                  'line', 'cpu', 'cpu_number', 'vcpu_number', 'keyfile',
-                  'cpu_core', 'disk_total', 'ram_total', 'kernel',
-                  'selinux', 'swap', 'raid', 'system', 'assets',
-                  'sudo_passwd')
+        fields = (
+            'id', 'parent_name', 'group', 'business', 'project', 'management_ip', 'ip', 'pdu', 'hostname', 'username',
+            'passwd', 'sudo_passwd', 'keyfile', 'port', 'cpu', 'cpu_number', 'vcpu_number', 'cpu_core', 'disk_total',
+            'ram_total', 'kernel', 'selinux', 'swap', 'raid', 'system', 'assets',)
 
     def create(self, data):
         if (data.get('assets')):
@@ -211,9 +181,9 @@ class NetworkSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Network_Assets
-        fields = ('id', 'ip', 'bandwidth', 'port_detail', 'firmware',
-                  'cpu', 'stone', 'configure_detail', 'assets', 'models_sn',
-                  'port', 'passwd', 'sudo_passwd', 'username','asset_level')
+        fields = (
+            'id', 'parent_name', 'management_ip', 'jump_ip', 'hostname', 'pdu', 'username', 'passwd', 'sudo_passwd',
+            'port', 'port_detail', 'system', 'cpu', 'ram_total', 'models_sn', 'configure_detail', 'assets')
 
     def create(self, data):
         if (data.get('assets')):

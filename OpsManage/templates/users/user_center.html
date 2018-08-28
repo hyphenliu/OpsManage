@@ -278,7 +278,7 @@
                                                     <th class="text-center">放置区域</th>
                                                     <th class="text-center">业务类型</th>
                                                     <th class="text-center">使用组</th>
-                                                    <th class="text-center">购买时间</th>
+                                                    <th class="text-center">入网时间</th>
                                                     <th class="text-center">设备状态</th>
                                                     <th class="text-center">操作</th>
                                                 </tr>
@@ -320,8 +320,8 @@
                                                             {% endfor %}
                                                         </td>
                                                         <td class="text-center">
-                                                            {% if a.buy_time %}
-                                                                {{ a.buy_time|date:"Y/m/d" }}
+                                                            {% if a.enter_time %}
+                                                                {{ a.enter_time|date:"Y/m/d" }}
                                                             {% else %}
                                                                 {{ a.create_date|date:"Y/m/d" }}
                                                             {% endif %}

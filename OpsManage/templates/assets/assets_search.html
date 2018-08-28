@@ -336,9 +336,9 @@
                                 <div class="form-group">
                                     <label class="col-sm-12 control-label">购买年份:</label>
                                     <div class="col-sm-12">
-                                        <input type="text" id="buy_time"
+                                        <input type="text" id="enter_time"
                                                style="border:0; color:#f6931f; font-weight:bold;">
-                                        <div id="buy_time-range"></div>
+                                        <div id="enter_time-range"></div>
                                     </div>
                                 </div>
                             </div>
@@ -854,7 +854,7 @@
                 }
             })
             //购买年份
-            $("#buy_time-range").slider({
+            $("#enter_time-range").slider({
                 range: "min",
                 value: 0,
                 min: 2000,
@@ -862,29 +862,29 @@
                 values: [2017, 2019],
                 slide: function (event, ui) {
                     if (ui.values[0] != ui.values[1]) {
-                        $("#buy_time").val(ui.values[0] + " - " + ui.values[1] + "年");
+                        $("#enter_time").val(ui.values[0] + " - " + ui.values[1] + "年");
                     }
                     else {
-                        $("#buy_time").val(ui.values[0] + "年");
+                        $("#enter_time").val(ui.values[0] + "年");
                     }
                 },
                 change: function (event, ui) {
                     var span = "<span class='label label-success' id='spanBuyTime'>购买年份：" + ui.values[0] + "-" + ui.values[1] +
-                        "年 <img alt='' src='/static/img/close.png' onclick='removeself(this)' /><input name='buy_time' type='hidden' value='"
+                        "年 <img alt='' src='/static/img/close.png' onclick='removeself(this)' /><input name='enter_time' type='hidden' value='"
                         + ui.values[0] + "-" + ui.values[1] + "' /></span> &nbsp;";
                     if ($("#spanBuyTime").length == 0) {
                         $('#divSelectedType').append(span);
                     }
                     else {
                         $("#spanBuyTime").html("购买年份：" + ui.values[0] + "-" + ui.values[1] +
-                            "年  <img alt='' src='/static/img/close.png' onclick='removeself(this)' /><input name='buy_time' type='hidden' value='"
+                            "年  <img alt='' src='/static/img/close.png' onclick='removeself(this)' /><input name='enter_time' type='hidden' value='"
                             + ui.values[0] + "-" + ui.values[1] + "' /></span> &nbsp;");
                     }
                     changepage(1);
                 }
             });
-            $("#buy_time").val($("#buy_time-range").slider("values", 0) +
-                " - " + $("#buy_time-range").slider("values", 1) + "年");
+            $("#enter_time").val($("#enter_time-range").slider("values", 0) +
+                " - " + $("#enter_time-range").slider("values", 1) + "年");
             //过保年份
             $("#expire_date-range").slider({
                 range: "min",

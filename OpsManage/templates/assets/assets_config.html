@@ -418,52 +418,6 @@
             <div class="col-lg-6">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa  fa-flash"></i> 出口线路
-                    </div>
-                    <!-- /.panel-heading -->
-                    <div class="panel-body">
-                        <div class="table-responsive">
-                            <div>
-                                <button type="button" class="btn btn-xs btn-default" data-toggle="modal"
-                                        data-target="#myLineModal"><i class="glyphicon glyphicon-plus"></i></button>
-                            </div>
-                            <table class="table table-striped" id="lineList">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>线路类型</th>
-                                    <th class="right">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for ds in baseAssets.line %}
-                                    <tr>
-                                        <td>{{ ds.id }}</td>
-                                        <td>{{ ds.line_name }}</td>
-                                        <td>
-                                            <button type="button" class="btn btn-xs btn-default"
-                                                    onclick="modfAssetsData(this,'line',{{ ds.id }},'{{ ds.line_name }}')">
-                                                <abbr
-                                                        title="编辑"><i class="glyphicon glyphicon-edit"></i></button>
-                                            <button type="button" class="btn btn-xs btn-default"
-                                                    onclick="delAssetsData(this,'line',{{ ds.id }},'{{ ds.line_name }}')">
-                                                <abbr title="删除"><i
-                                                        class="glyphicon glyphicon-trash"></i></button>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.table-responsive -->
-                    </div>
-                    <!-- /.panel-body -->
-                </div>
-                <!-- /.panel -->
-            </div>
-            <div class="col-lg-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
                         <i class="glyphicon glyphicon-hdd  "></i> Raid类型
                     </div>
                     <!-- /.panel-heading -->
@@ -876,17 +830,6 @@
                     <h4 class="modal-title" id="myLineModalLabel">
                         添加出口线路
                     </h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" role="form" id="line_assets">
-                        <div class="form-group">
-                            <label class="col-sm-3 control-label no-padding-right"
-                                   for="form-field-4"><strong>出口线路</strong></label>
-                            <div class="col-sm-6">
-                                <input class="form-control" type="text" name="line_name"/>
-                            </div>
-                        </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭

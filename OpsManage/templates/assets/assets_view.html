@@ -54,8 +54,8 @@
                                     </span>
                             </a>
                             <a class="list-group-item">
-                                <i class="fa fa-calendar fa-fw"></i> 购买时间
-                                <span class="pull-right text-muted small"><em>{{ asset_main.buy_time|date:"Y/m/d" }}</em>
+                                <i class="fa fa-calendar fa-fw"></i> 入网时间
+                                <span class="pull-right text-muted small"><em>{{ asset_main.enter_time|date:"Y/m/d" }}</em>
                                     </span>
                             </a>
                             <a class="list-group-item">
@@ -244,8 +244,8 @@
                                     </span>
                                 </a>
                                 <a class="list-group-item">
-                                    <i class="fa fa-bolt fa-fw"></i> 固件版本
-                                    <span class="pull-right text-muted small"><em>{{ asset_body.firmware|default:"" }}</em>
+                                    <i class="fa fa-bolt fa-fw"></i> 操作系统版本
+                                    <span class="pull-right text-muted small"><em>{{ asset_body.ios_version|default:"" }}</em>
                                     </span>
                                 </a>
                                 <a class="list-group-item">

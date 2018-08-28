@@ -9,32 +9,36 @@ sys.setdefaultencoding("utf-8")
 
 class Assets(models.Model):
     '''资产通用配置项'''
-    assets_class = models.CharField(max_length=100, null=True, verbose_name='资产类别')
-    assets_type = models.CharField(max_length=100, null=True, verbose_name='资产类型')
-    name = models.CharField(max_length=100, verbose_name='资产编号', unique=True)
-    put_zone = models.CharField(max_length=100, blank=True, null=True, verbose_name='所在机房')
-    put_rack = models.CharField(max_length=100, blank=True, null=True, verbose_name='所在机架')  # hyphen add 20180714
-    model = models.CharField(max_length=100, blank=True, null=True, verbose_name='资产型号')
-    sn = models.CharField(max_length=100, verbose_name='设备序列号', blank=True, null=True)
-    management_ip = models.GenericIPAddressField(u'管理IP', blank=True, null=True)
-    manufacturer = models.CharField(max_length=100, blank=True, null=True, verbose_name='制造商')
-    buy_time = models.DateField(blank=True, null=True, verbose_name='购买时间')
-    contract = models.CharField(max_length=200, blank=True, null=True, verbose_name='资产购买合同')  # hyphen add 20180714
-    provider = models.CharField(max_length=100, blank=True, null=True, verbose_name='维保服务商')
-    service_contact = models.CharField(max_length=100, blank=True, null=True,
-                                       verbose_name='维保联系人')  # hyphen add 20180714
-    service_level = models.CharField(max_length=100, blank=True, null=True, verbose_name='服务级别')  # hyphen add 20180714
-    service_start = models.DateField(blank=True, null=True, verbose_name='维保开始时间')  # hyphen add 20180714
-    maintenance = models.CharField(max_length=200, blank=True, null=True, verbose_name='维保购买合同')  # hyphen add 20180714
-    expire_date = models.DateField(u'过保时间', null=True, blank=True)
-    buy_user = models.CharField(max_length=100, blank=True, null=True, verbose_name='资产归属人')
-    status = models.CharField(max_length=100, blank=True, null=True, verbose_name='资产状态')
-    monitor_status = models.CharField(max_length=100, blank=True, null=True, verbose_name='监控状态')  # hyphen add 20180714
-    group = models.CharField(max_length=100, null=True, verbose_name='使用部门')
-    business = models.CharField(max_length=100, null=True, verbose_name='业务项目')
-    project = models.CharField(max_length=200, null=True, verbose_name='业务系统')
-    host_vars = models.TextField(blank=True, null=True, verbose_name='ansible主机变量')
-    mark = models.TextField(blank=True, null=True, verbose_name='资产标示')
+    status_type_choices = (
+        ('online', u'已上线'),
+        ('offline', u'已下线'),
+        ('storeroom', u'库房'),
+        ('maintenancing', u'维修中'),
+        ('configuration', u'配置中')
+    )
+    monitor_type_choices = (  # 关联设备状态
+        ('monitored', u'已监控'),
+        ('unmonitor', u'未监控'),
+        ('nomonitor', u'不监控'),
+    )
+    assets_class = models.CharField(max_length=100, null=True, verbose_name=u'资产类别')
+    assets_type = models.CharField(max_length=100, null=True, verbose_name=u'资产类型')
+    put_zone = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'所在机房')
+    put_rack = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'所在机架')  # hyphen add 20180714
+    model = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'资产型号')
+    name = models.CharField(max_length=100, unique=True, verbose_name=u'资产编号')
+    sn = models.CharField(max_length=100, unique=True, blank=True, null=True, verbose_name=u'设备序列号')
+    manufacturer = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'制造商')
+    enter_time = models.DateField(blank=True, null=True, verbose_name=u'入网时间')
+    contract_buy = models.CharField(max_length=200, blank=True, null=True, verbose_name=u'购买合同')  # hyphen add 20180714
+    contract_service = models.CharField(max_length=200, blank=True, null=True,
+                                        verbose_name=u'维保合同')  # hyphen add 20180714
+    buy_user = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'资产归属人')
+    status = models.CharField(max_length=100, choices=status_type_choices, default='online', verbose_name=u'资产状态')
+    monitor_status = models.CharField(max_length=100, choices=monitor_type_choices, default='unmonitor',
+                                      verbose_name=u'监控状态')  # hyphen add 20180714
+    host_vars = models.TextField(blank=True, null=True, verbose_name=u'ansible主机变量')
+    mark = models.TextField(blank=True, null=True, verbose_name=u'资产标示')
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now_add=True)
 
@@ -54,28 +58,33 @@ class Assets(models.Model):
 class Server_Assets(models.Model):
     '''服务器资产配置项'''
     assets = models.OneToOneField('Assets')
-    ip = models.CharField(max_length=100, unique=True, blank=True, null=True, verbose_name='主机IP地址')
-    hostname = models.CharField(max_length=100, blank=True, null=True, verbose_name='主机名')
-    username = models.CharField(max_length=100, blank=True, null=True, verbose_name='用户名')
-    passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name='密码')
-    sudo_passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name='root密码')
-    keyfile = models.SmallIntegerField(blank=True, null=True, verbose_name='密钥文件')
-    # FileField(upload_to = './upload/key/',blank=True,null=True,verbose_name='密钥文件')
-    port = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name='端口号')
-    line = models.CharField(max_length=100, null=True, verbose_name='出口线')
-    cpu = models.CharField(max_length=100, blank=True, null=True, verbose_name='CPU型号')
-    cpu_number = models.SmallIntegerField(blank=True, null=True, verbose_name='CPU个数')
-    vcpu_number = models.SmallIntegerField(blank=True, null=True, verbose_name='逻辑CPU个数')
-    cpu_core = models.SmallIntegerField(blank=True, null=True, verbose_name='CPU核心数')
-    disk_total = models.CharField(max_length=100, blank=True, null=True, verbose_name='磁盘空间')
-    ram_total = models.IntegerField(blank=True, null=True, verbose_name='内存容量')
-    kernel = models.CharField(max_length=100, blank=True, null=True, verbose_name='内核版本')
-    selinux = models.CharField(max_length=100, blank=True, null=True, verbose_name='Selinux状态')
-    swap = models.CharField(max_length=100, blank=True, null=True, verbose_name='Swap容量')
-    raid = models.CharField(max_length=100, null=True, verbose_name='Raid类型')
-    system = models.CharField(max_length=100, blank=True, null=True, verbose_name='系统及版本')
-    create_date = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
-    update_date = models.DateTimeField(auto_now_add=True, verbose_name='更新时间')
+    parent_name = models.CharField(max_length=100, verbose_name=u'父节点资产编号')  # hyphen add 20180827 以后要作一致性检查
+    group = models.CharField(max_length=100, null=True, verbose_name=u'使用部门')  # Adjust by hyphen 20180827 from Assets
+    business = models.CharField(max_length=100, null=True, verbose_name=u'业务项目')  # Adjust by hyphen 20180827 from Assets
+    project = models.CharField(max_length=200, null=True, verbose_name=u'业务系统')  # Adjust by hyphen 20180827 from Assets
+    management_ip = models.GenericIPAddressField(blank=True, null=True, verbose_name=u'管理IP')
+    ip = models.GenericIPAddressField(max_length=100, unique=True, blank=True, null=True, verbose_name=u'主机IP地址')
+    pdu = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'电源PDU')  # hyphen add 20180827
+    hostname = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'主机名')
+    username = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'用户名')
+    passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'密码')
+    sudo_passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'root密码')
+    keyfile = models.SmallIntegerField(blank=True, null=True, verbose_name=u'密钥文件')
+    # FileField(upload_to = './upload/key/',blank=True,null=True,verbose_name=u'密钥文件')
+    port = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name=u'端口号')
+    cpu = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'CPU型号')
+    cpu_number = models.SmallIntegerField(blank=True, null=True, verbose_name=u'CPU个数')
+    vcpu_number = models.SmallIntegerField(blank=True, null=True, verbose_name=u'逻辑CPU个数')
+    cpu_core = models.SmallIntegerField(blank=True, null=True, verbose_name=u'CPU核心数')
+    disk_total = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'磁盘空间')
+    ram_total = models.IntegerField(blank=True, null=True, verbose_name=u'内存容量')
+    kernel = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'内核版本')
+    selinux = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Selinux状态')
+    swap = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'Swap容量')
+    raid = models.CharField(max_length=100, null=True, verbose_name=u'Raid类型')
+    system = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'系统及版本')
+    create_date = models.DateTimeField(auto_now_add=True, verbose_name=u'创建时间')
+    update_date = models.DateTimeField(auto_now_add=True, verbose_name=u'更新时间')
     '''自定义添加只读权限-系统自带了add change delete三种权限'''
 
     class Meta:
@@ -93,19 +102,21 @@ class Server_Assets(models.Model):
 class Network_Assets(models.Model):
     '''网络设备配置项'''
     assets = models.OneToOneField('Assets')
-    bandwidth = models.CharField(max_length=100, blank=True, null=True, verbose_name='背板带宽')
-    ip = models.CharField(unique=True, max_length=100, blank=True, null=True, verbose_name='管理ip')
-    username = models.CharField(max_length=100, blank=True, null=True, verbose_name='登陆用户')
-    passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name='用户密码')
-    sudo_passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name='en密码')
-    port = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name='登陆端口')
-    port_detail = models.CharField(max_length=100, blank=True, null=True, verbose_name='设备端口情况')
-    firmware = models.CharField(max_length=100, blank=True, null=True, verbose_name='固件版本')
-    cpu = models.CharField(max_length=100, blank=True, null=True, verbose_name='cpu型号')
-    stone = models.CharField(max_length=100, blank=True, null=True, verbose_name='内存大小')
-    configure_detail = models.TextField(max_length=100, blank=True, null=True, verbose_name='配置说明')
-    models_sn = models.TextField(blank=True, null=True, verbose_name='各模块序列号')  # hyphen add 20180714
-    asset_level = models.CharField(max_length=100, blank=True, null=True, verbose_name='设备级别')  # hyphen add 20180714
+    parent_name = models.CharField(max_length=100, verbose_name=u'父节点资产编号')  # hyphen add 20180827 以后要作一致性检查
+    management_ip = models.GenericIPAddressField(blank=True, null=True, verbose_name=u'管理IP')
+    jump_ip = models.GenericIPAddressField(unique=True, max_length=100, blank=True, null=True, verbose_name=u'跳转ip')
+    hostname = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'设备名')  # hyphen add 20180827
+    pdu = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'电源PDU')  # hyphen add 20180827
+    username = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'登陆用户')
+    passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'用户密码')
+    sudo_passwd = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'en密码')
+    port = models.DecimalField(max_digits=6, decimal_places=0, blank=True, null=True, verbose_name=u'登陆端口')
+    port_detail = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'设备端口情况')
+    system = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'系统及版本')
+    cpu = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'cpu型号')
+    ram_total = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'内存大小')
+    models_sn = models.TextField(blank=True, null=True, verbose_name=u'各模块序列号')  # hyphen add 20180714
+    configure_detail = models.TextField(max_length=100, blank=True, null=True, verbose_name=u'配置说明')
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now_add=True)
 
@@ -123,12 +134,12 @@ class Network_Assets(models.Model):
 
 class Disk_Assets(models.Model):
     assets = models.ForeignKey('Assets')
-    device_volume = models.CharField(max_length=100, blank=True, null=True, verbose_name='硬盘容量')
-    device_status = models.CharField(max_length=100, blank=True, null=True, verbose_name='硬盘状态')
-    device_model = models.CharField(max_length=100, blank=True, null=True, verbose_name='硬盘型号')
-    device_brand = models.CharField(max_length=100, blank=True, null=True, verbose_name='硬盘生产商')
-    device_serial = models.CharField(max_length=100, blank=True, null=True, verbose_name='硬盘序列号')
-    device_slot = models.SmallIntegerField(blank=True, null=True, verbose_name='硬盘插槽')
+    device_volume = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'硬盘容量')
+    device_status = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'硬盘状态')
+    device_model = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'硬盘型号')
+    device_brand = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'硬盘生产商')
+    device_serial = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'硬盘序列号')
+    device_slot = models.SmallIntegerField(blank=True, null=True, verbose_name=u'硬盘插槽')
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now_add=True)
 
@@ -147,11 +158,11 @@ class Disk_Assets(models.Model):
 
 class Ram_Assets(models.Model):
     assets = models.ForeignKey('Assets')
-    device_model = models.CharField(max_length=100, blank=True, null=True, verbose_name='内存型号')
-    device_volume = models.CharField(max_length=100, blank=True, null=True, verbose_name='内存容量')
-    device_brand = models.CharField(max_length=100, blank=True, null=True, verbose_name='内存生产商')
-    device_slot = models.SmallIntegerField(blank=True, null=True, verbose_name='内存插槽')
-    device_status = models.CharField(max_length=100, blank=True, null=True, verbose_name='内存状态')
+    device_model = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'内存型号')
+    device_volume = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'内存容量')
+    device_brand = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'内存生产商')
+    device_slot = models.SmallIntegerField(blank=True, null=True, verbose_name=u'内存插槽')
+    device_status = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'内存状态')
     create_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(auto_now_add=True)
 
@@ -175,7 +186,7 @@ class NetworkCard_Assets(models.Model):
     ip = models.GenericIPAddressField(u'IP', blank=True, null=True)
     module = models.CharField(max_length=50, blank=True, null=True)
     mtu = models.CharField(max_length=50, blank=True, null=True)
-    active = models.SmallIntegerField(blank=True, null=True, verbose_name='是否在线')
+    active = models.SmallIntegerField(blank=True, null=True, verbose_name=u'是否在线')
 
     class Meta:
         db_table = 'opsmanage_networkcard_assets'
@@ -219,10 +230,10 @@ class Service_Assets(models.Model):
 
 
 class Zone_Assets(models.Model):
-    zone_name = models.CharField(max_length=100, unique=True, verbose_name='机房名称')
-    zone_contact = models.CharField(max_length=100, blank=True, null=True, verbose_name='机房联系人')
-    zone_number = models.CharField(max_length=100, blank=True, null=True, verbose_name='联系人号码')
-    # zone_network = models.CharField(max_length=100, blank=True, null=True, verbose_name='机房网段')
+    zone_name = models.CharField(max_length=100, unique=True, verbose_name=u'机房名称')
+    zone_contact = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'机房联系人')
+    zone_number = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'联系人号码')
+    # zone_network = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'机房网段')
     '''自定义权限'''
 
     class Meta:
@@ -235,22 +246,6 @@ class Zone_Assets(models.Model):
         )
         verbose_name = '机房资产表'
         verbose_name_plural = '机房资产表'
-
-
-class Line_Assets(models.Model):
-    line_name = models.CharField(max_length=100, unique=True)
-    '''自定义权限'''
-
-    class Meta:
-        db_table = 'opsmanage_line_assets'
-        permissions = (
-            ("can_read_line_assets", "读取出口线路资产权限"),
-            ("can_change_line_assetss", "更改出口线路资产权限"),
-            ("can_add_line_assets", "添加出口线路资产权限"),
-            ("can_delete_line_assets", "删除出口线路资产权限"),
-        )
-        verbose_name = '出口线路资产表'
-        verbose_name_plural = '出口线路资产表'
 
 
 class Raid_Assets(models.Model):
@@ -279,8 +274,8 @@ class Type_Assets(models.Model):
         ('storage', u'存储设备'),
         ('office', u'办公设备'),
     )
-    assets_type = models.CharField(choices=assets_type_choices, max_length=100, default='server', verbose_name='资产类别')
-    type_name = models.CharField(max_length=100, unique=True, verbose_name='资产类型')
+    assets_type = models.CharField(choices=assets_type_choices, max_length=100, default='server', verbose_name=u'资产类别')
+    type_name = models.CharField(max_length=100, unique=True, verbose_name=u'资产类型')
     '''自定义权限'''
 
     class Meta:
@@ -295,112 +290,72 @@ class Type_Assets(models.Model):
         verbose_name_plural = '资产类型表'
 
 
-class Level_Assets(models.Model):
-    level_name = models.CharField(max_length=100, unique=True)
-    '''自定义权限'''
-
-    class Meta:
-        db_table = 'opsmanage_level_assets'
-        permissions = (
-            ("can_read_level_assets", "读取设备级别权限"),
-            ("can_change_level_assets", "更改设备级别权限"),
-            ("can_add_level_assets", "添加设备级别权限"),
-            ("can_delete_level_assets", "删除设备级别权限"),
-        )
-        verbose_name = '设备级别表'
-        verbose_name_plural = '设备级别表'
-
-
-class Status_Assets(models.Model):
-    status_name = models.CharField(max_length=100, unique=True)
-    '''自定义权限'''
-
-    class Meta:
-        db_table = 'opsmanage_status_assets'
-        permissions = (
-            ("can_read_status_assets", "读取设备状态权限"),
-            ("can_change_status_assets", "更改设备状态权限"),
-            ("can_add_status_assets", "添加设备状态权限"),
-            ("can_delete_status_assets", "删除设备状态权限"),
-        )
-        verbose_name = '设备状态表'
-        verbose_name_plural = '设备状态表'
-
-
-class Monitor_Assets(models.Model):
-    monitor_name = models.CharField(max_length=100, unique=True)
-    '''自定义权限'''
-
-    class Meta:
-        db_table = 'opsmanage_monitor_assets'
-        permissions = (
-            ("can_read_monitor_assets", "读取监控状态权限"),
-            ("can_change_monitor_assets", "更改监控状态权限"),
-            ("can_add_monitor_assets", "添加监控状态权限"),
-            ("can_delete_monitor_assets", "删除监控状态权限"),
-        )
-        verbose_name = '监控状态表'
-        verbose_name_plural = '监控状态表'
-
-
 class Contract_Assets(models.Model):
-    contract_name = models.CharField(max_length=200, unique=True)
-    contract_number = models.CharField(max_length=100, unique=True)
+    contract_type_choices = (
+        ('maintenance', u'维保合同'),
+        ('material', u'资产合同'),
+    )
+    contract_pay_choices = (
+        ('year', u'按年付'),
+        ('season', u'按季度'),
+        ('changable', u'自定义'),
+    )
+    contract_name = models.CharField(max_length=250, unique=True, verbose_name=u'合同名称')
+    contract_number = models.CharField(max_length=100, unique=True, verbose_name=u'合同编号')
+    contract_type = models.CharField(max_length=100, unique=True, choices=contract_type_choices, default='maintenance',
+                                     verbose_name=u'合同类型')
+    contract_provider = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'合同签署商')
+    contract_contactor = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'厂商联系人')
+    contract_contact = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'厂商联系方式')
+    contract_start = models.DateField(blank=True, null=True, verbose_name=u'合同开始时间')
+    contract_expire = models.DateField(null=True, blank=True, verbose_name=u'合同结束时间')
+    contract_pay = models.IntegerField(null=True, blank=True, choices=contract_pay_choices, default='year',
+                                       verbose_name=u'合同付款方式')
+    contract_level = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'服务级别')
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now_add=True)
     '''自定义权限'''
 
     class Meta:
         db_table = 'opsmanage_contract_assets'
         permissions = (
-            ("can_read_contract_assets", "读取资产合同权限"),
-            ("can_change_contract_assets", "更改资产合同权限"),
-            ("can_add_contract_assets", "添加资产合同权限"),
-            ("can_delete_contract_assets", "删除资产合同权限"),
+            ("can_read_contract_assets", "读取合同权限"),
+            ("can_change_contract_assets", "更改合同权限"),
+            ("can_add_contract_assets", "添加合同权限"),
+            ("can_delete_contract_assets", "删除合同权限"),
         )
-        verbose_name = '资产合同表'
-        verbose_name_plural = '资产合同表'
+        verbose_name = '合同表'
+        verbose_name_plural = '合同表'
 
 
-class Maintenance_Assets(models.Model):
-    maintenance_name = models.CharField(max_length=200, unique=True)
-    maintenance_number = models.CharField(max_length=100, unique=True)
+class Contract_Pay(models.Model):
+    contract = models.ForeignKey('Contract_Assets', on_delete=models.CASCADE, related_name='contract_pay')
+    paid_frequency = models.CharField(max_length=100, unique=True, verbose_name=u'支付次数')
+    paid_date = models.DateField(blank=True, null=True, verbose_name=u'支付时间')
+    create_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(auto_now_add=True)
     '''自定义权限'''
 
     class Meta:
-        db_table = 'opsmanage_maintenance_assets'
+        db_table = 'opsmanage_contract_assets'
         permissions = (
-            ("can_read_maintenance_assets", "读取服务合同权限"),
-            ("can_change_maintenance_assets", "更改服务合同权限"),
-            ("can_add_maintenance_assets", "添加服务合同权限"),
-            ("can_delete_maintenance_assets", "删除服务合同权限"),
+            ("can_read_contract_assets", "读取合同支付权限"),
+            ("can_change_contract_assets", "更改合同支付权限"),
+            ("can_add_contract_assets", "添加合同支付权限"),
+            ("can_delete_contract_assets", "删除合同支付权限"),
         )
-        verbose_name = '服务合同表'
-        verbose_name_plural = '服务合同表'
-
-
-class Provider_Assets(models.Model):
-    provider_name = models.CharField(max_length=100, unique=True)
-    '''自定义权限'''
-
-    class Meta:
-        db_table = 'opsmanage_provider_assets'
-        permissions = (
-            ("can_read_provider_assets", "读取服务商权限"),
-            ("can_change_provider_assets", "更改服务商权限"),
-            ("can_add_provider_assets", "添加服务商权限"),
-            ("can_delete_provider_assets", "删除服务商权限"),
-        )
-        verbose_name = '服务商表'
-        verbose_name_plural = '服务商表'
+        verbose_name = '合同支付表'
+        verbose_name_plural = '合同支付表'
 
 
 # hyphen add end 20180714
 
 class Log_Assets(models.Model):
-    assets_id = models.IntegerField(verbose_name='资产类型id', blank=True, null=True, default=None)
-    assets_user = models.CharField(max_length=50, verbose_name='操作用户', default=None)
-    assets_content = models.CharField(max_length=100, verbose_name='名称', default=None)
+    assets_id = models.IntegerField(verbose_name=u'资产类型id', blank=True, null=True, default=None)
+    assets_user = models.CharField(max_length=50, verbose_name=u'操作用户', default=None)
+    assets_content = models.CharField(max_length=100, verbose_name=u'名称', default=None)
     assets_type = models.CharField(max_length=50, default=None)
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='执行时间')
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'执行时间')
 
     class Meta:
         db_table = 'opsmanage_log_assets'
@@ -417,27 +372,26 @@ class Project_Config(models.Model):
         ('branch', u'branch'),
         ('tag', u'tag'),
     )
-    # 下一句被我修改 20180722
     project = models.ForeignKey('Service_Assets', related_name='project_config', on_delete=models.CASCADE)
-    project_env = models.CharField(max_length=50, verbose_name='项目环境', default=None)
-    project_name = models.CharField(max_length=100, verbose_name='项目名称', default=None)
-    project_service = models.SmallIntegerField(verbose_name='业务类型')
-    project_type = models.CharField(max_length=10, verbose_name='编译类型')
-    project_local_command = models.TextField(blank=True, null=True, verbose_name='部署服务器要执行的命令', default=None)
-    project_repo_dir = models.CharField(max_length=100, verbose_name='本地仓库目录', default=None)
-    project_dir = models.CharField(max_length=100, verbose_name='代码目录', default=None)
-    project_exclude = models.TextField(blank=True, null=True, verbose_name='排除文件', default=None)
-    project_address = models.CharField(max_length=100, verbose_name='版本仓库地址', default=None)
-    project_uuid = models.CharField(max_length=50, verbose_name='唯一id')
-    project_repo_user = models.CharField(max_length=50, verbose_name='仓库用户名', blank=True, null=True)
-    project_repo_passwd = models.CharField(max_length=50, verbose_name='仓库密码', blank=True, null=True)
-    project_repertory = models.CharField(choices=project_repertory_choices, max_length=10, verbose_name='仓库类型',
+    project_env = models.CharField(max_length=50, verbose_name=u'项目环境', default=None)
+    project_name = models.CharField(max_length=100, verbose_name=u'项目名称', default=None)
+    project_service = models.SmallIntegerField(verbose_name=u'业务类型')
+    project_type = models.CharField(max_length=10, verbose_name=u'编译类型')
+    project_local_command = models.TextField(blank=True, null=True, verbose_name=u'部署服务器要执行的命令', default=None)
+    project_repo_dir = models.CharField(max_length=100, verbose_name=u'本地仓库目录', default=None)
+    project_dir = models.CharField(max_length=100, verbose_name=u'代码目录', default=None)
+    project_exclude = models.TextField(blank=True, null=True, verbose_name=u'排除文件', default=None)
+    project_address = models.CharField(max_length=100, verbose_name=u'版本仓库地址', default=None)
+    project_uuid = models.CharField(max_length=50, verbose_name=u'唯一id')
+    project_repo_user = models.CharField(max_length=50, verbose_name=u'仓库用户名', blank=True, null=True)
+    project_repo_passwd = models.CharField(max_length=50, verbose_name=u'仓库密码', blank=True, null=True)
+    project_repertory = models.CharField(choices=project_repertory_choices, max_length=10, verbose_name=u'仓库类型',
                                          default=None)
-    project_status = models.SmallIntegerField(verbose_name='是否激活', blank=True, null=True, default=None)
-    project_remote_command = models.TextField(blank=True, null=True, verbose_name='部署之后执行的命令', default=None)
-    project_user = models.CharField(max_length=50, verbose_name='项目文件宿主', default=None)
-    project_model = models.CharField(choices=deploy_model_choices, max_length=10, verbose_name='上线类型', default=None)
-    project_audit_group = models.SmallIntegerField(verbose_name='项目授权组', blank=True, null=True, default=None)
+    project_status = models.SmallIntegerField(verbose_name=u'是否激活', blank=True, null=True, default=None)
+    project_remote_command = models.TextField(blank=True, null=True, verbose_name=u'部署之后执行的命令', default=None)
+    project_user = models.CharField(max_length=50, verbose_name=u'项目文件宿主', default=None)
+    project_model = models.CharField(choices=deploy_model_choices, max_length=10, verbose_name=u'上线类型', default=None)
+    project_audit_group = models.SmallIntegerField(verbose_name=u'项目授权组', blank=True, null=True, default=None)
     '''自定义权限'''
 
     class Meta:
@@ -454,12 +408,12 @@ class Project_Config(models.Model):
 
 
 class Log_Project_Config(models.Model):
-    project_id = models.IntegerField(verbose_name='项目id', blank=True, null=True, default=None)
-    project_user = models.CharField(max_length=50, verbose_name='操作用户', default=None)
-    project_name = models.CharField(max_length=100, verbose_name='名称', default=None)
+    project_id = models.IntegerField(verbose_name=u'项目id', blank=True, null=True, default=None)
+    project_user = models.CharField(max_length=50, verbose_name=u'操作用户', default=None)
+    project_name = models.CharField(max_length=100, verbose_name=u'名称', default=None)
     project_content = models.CharField(max_length=100, default=None)
     project_branch = models.CharField(max_length=100, default=None, blank=True, null=True)
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='执行时间')
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'执行时间')
 
     class Meta:
         db_table = 'opsmanage_log_project_config'
@@ -469,8 +423,8 @@ class Log_Project_Config(models.Model):
 
 class Project_Number(models.Model):
     project = models.ForeignKey('Project_Config', related_name='project_number', on_delete=models.CASCADE)
-    server = models.CharField(max_length=100, verbose_name='服务器IP', default=None)
-    dir = models.CharField(max_length=100, verbose_name='项目目录', default=None)
+    server = models.CharField(max_length=100, verbose_name=u'服务器IP', default=None)
+    dir = models.CharField(max_length=100, verbose_name=u'项目目录', default=None)
 
     class Meta:
         db_table = 'opsmanage_project_number'
@@ -484,18 +438,18 @@ class Project_Number(models.Model):
 
 class Cron_Config(models.Model):
     cron_server = models.ForeignKey('Server_Assets')
-    cron_minute = models.CharField(max_length=10, verbose_name='分', default=None)
-    cron_hour = models.CharField(max_length=10, verbose_name='时', default=None)
-    cron_day = models.CharField(max_length=10, verbose_name='天', default=None)
-    cron_week = models.CharField(max_length=10, verbose_name='周', default=None)
-    cron_month = models.CharField(max_length=10, verbose_name='月', default=None)
-    cron_user = models.CharField(max_length=50, verbose_name='任务用户', default=None)
-    cron_name = models.CharField(max_length=100, verbose_name='任务名称', default=None)
-    cron_desc = models.CharField(max_length=200, blank=True, null=True, verbose_name='任务描述', default=None)
-    cron_command = models.CharField(max_length=200, verbose_name='任务参数', default=None)
-    cron_script = models.FileField(upload_to='./cron/', blank=True, null=True, verbose_name='脚本路径', default=None)
-    cron_script_path = models.CharField(max_length=100, blank=True, null=True, verbose_name='脚本路径', default=None)
-    cron_status = models.SmallIntegerField(verbose_name='任务状态', default=None)
+    cron_minute = models.CharField(max_length=10, verbose_name=u'分', default=None)
+    cron_hour = models.CharField(max_length=10, verbose_name=u'时', default=None)
+    cron_day = models.CharField(max_length=10, verbose_name=u'天', default=None)
+    cron_week = models.CharField(max_length=10, verbose_name=u'周', default=None)
+    cron_month = models.CharField(max_length=10, verbose_name=u'月', default=None)
+    cron_user = models.CharField(max_length=50, verbose_name=u'任务用户', default=None)
+    cron_name = models.CharField(max_length=100, verbose_name=u'任务名称', default=None)
+    cron_desc = models.CharField(max_length=200, blank=True, null=True, verbose_name=u'任务描述', default=None)
+    cron_command = models.CharField(max_length=200, verbose_name=u'任务参数', default=None)
+    cron_script = models.FileField(upload_to='./cron/', blank=True, null=True, verbose_name=u'脚本路径', default=None)
+    cron_script_path = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'脚本路径', default=None)
+    cron_status = models.SmallIntegerField(verbose_name=u'任务状态', default=None)
 
     class Meta:
         db_table = 'opsmanage_cron_config'
@@ -511,12 +465,12 @@ class Cron_Config(models.Model):
 
 
 class Log_Cron_Config(models.Model):
-    cron_id = models.IntegerField(verbose_name='id', blank=True, null=True, default=None)
-    cron_user = models.CharField(max_length=50, verbose_name='操作用户', default=None)
-    cron_name = models.CharField(max_length=100, verbose_name='名称', default=None)
+    cron_id = models.IntegerField(verbose_name=u'id', blank=True, null=True, default=None)
+    cron_user = models.CharField(max_length=50, verbose_name=u'操作用户', default=None)
+    cron_name = models.CharField(max_length=100, verbose_name=u'名称', default=None)
     cron_content = models.CharField(max_length=100, default=None)
     cron_server = models.CharField(max_length=100, default=None)
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='执行时间')
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'执行时间')
 
     class Meta:
         db_table = 'opsmanage_log_cron_config'
@@ -525,11 +479,11 @@ class Log_Cron_Config(models.Model):
 
 
 class Log_Ansible_Model(models.Model):
-    ans_user = models.CharField(max_length=50, verbose_name='使用用户', default=None)
-    ans_model = models.CharField(max_length=100, verbose_name='模块名称', default=None)
-    ans_args = models.CharField(max_length=500, blank=True, null=True, verbose_name='模块参数', default=None)
-    ans_server = models.TextField(verbose_name='服务器', default=None)
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='执行时间')
+    ans_user = models.CharField(max_length=50, verbose_name=u'使用用户', default=None)
+    ans_model = models.CharField(max_length=100, verbose_name=u'模块名称', default=None)
+    ans_args = models.CharField(max_length=500, blank=True, null=True, verbose_name=u'模块参数', default=None)
+    ans_server = models.TextField(verbose_name=u'服务器', default=None)
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'执行时间')
 
     class Meta:
         db_table = 'opsmanage_log_ansible_model'
@@ -549,16 +503,16 @@ class Ansible_Playbook(models.Model):
         ('group', u'group'),
         ('custom', u'custom'),
     )
-    playbook_name = models.CharField(max_length=50, verbose_name='剧本名称', unique=True)
-    playbook_desc = models.CharField(max_length=200, verbose_name='功能描述', blank=True, null=True)
-    playbook_vars = models.TextField(verbose_name='模块参数', blank=True, null=True)
-    playbook_uuid = models.CharField(max_length=50, verbose_name='唯一id')
-    playbook_server_model = models.CharField(choices=type, verbose_name='服务器选择类型', max_length=10, blank=True, null=True)
-    playbook_server_value = models.SmallIntegerField(verbose_name='服务器选择类型值', blank=True, null=True)
-    playbook_file = models.FileField(upload_to='./playbook/', verbose_name='剧本路径')
-    playbook_auth_group = models.SmallIntegerField(verbose_name='授权组', blank=True, null=True)
-    playbook_auth_user = models.SmallIntegerField(verbose_name='授权用户', blank=True, null=True, )
-    playbook_type = models.SmallIntegerField(verbose_name='剧本类型', blank=True, null=True, default=0)
+    playbook_name = models.CharField(max_length=50, verbose_name=u'剧本名称', unique=True)
+    playbook_desc = models.CharField(max_length=200, verbose_name=u'功能描述', blank=True, null=True)
+    playbook_vars = models.TextField(verbose_name=u'模块参数', blank=True, null=True)
+    playbook_uuid = models.CharField(max_length=50, verbose_name=u'唯一id')
+    playbook_server_model = models.CharField(choices=type, verbose_name=u'服务器选择类型', max_length=10, blank=True, null=True)
+    playbook_server_value = models.SmallIntegerField(verbose_name=u'服务器选择类型值', blank=True, null=True)
+    playbook_file = models.FileField(upload_to='./playbook/', verbose_name=u'剧本路径')
+    playbook_auth_group = models.SmallIntegerField(verbose_name=u'授权组', blank=True, null=True)
+    playbook_auth_user = models.SmallIntegerField(verbose_name=u'授权用户', blank=True, null=True, )
+    playbook_type = models.SmallIntegerField(verbose_name=u'剧本类型', blank=True, null=True, default=0)
 
     class Meta:
         db_table = 'opsmanage_ansible_playbook'
@@ -574,14 +528,14 @@ class Ansible_Playbook(models.Model):
 
 
 class Ansible_Script(models.Model):
-    script_name = models.CharField(max_length=50, verbose_name='脚本名称', unique=True)
-    script_uuid = models.CharField(max_length=50, verbose_name='唯一id', blank=True, null=True)
-    script_server = models.TextField(verbose_name='目标机器', blank=True, null=True)
-    script_file = models.FileField(upload_to='./script/', verbose_name='脚本路径')
-    script_args = models.TextField(blank=True, null=True, verbose_name='脚本参数')
-    script_service = models.SmallIntegerField(verbose_name='授权业务', blank=True, null=True)
-    script_group = models.SmallIntegerField(verbose_name='授权组', blank=True, null=True)
-    script_type = models.CharField(max_length=50, verbose_name='脚本类型', blank=True, null=True)
+    script_name = models.CharField(max_length=50, verbose_name=u'脚本名称', unique=True)
+    script_uuid = models.CharField(max_length=50, verbose_name=u'唯一id', blank=True, null=True)
+    script_server = models.TextField(verbose_name=u'目标机器', blank=True, null=True)
+    script_file = models.FileField(upload_to='./script/', verbose_name=u'脚本路径')
+    script_args = models.TextField(blank=True, null=True, verbose_name=u'脚本参数')
+    script_service = models.SmallIntegerField(verbose_name=u'授权业务', blank=True, null=True)
+    script_group = models.SmallIntegerField(verbose_name=u'授权组', blank=True, null=True)
+    script_type = models.CharField(max_length=50, verbose_name=u'脚本类型', blank=True, null=True)
 
     class Meta:
         db_table = 'opsmanage_ansible_script'
@@ -599,12 +553,12 @@ class Ansible_Script(models.Model):
 
 
 class Log_Ansible_Playbook(models.Model):
-    ans_id = models.IntegerField(verbose_name='id', blank=True, null=True, default=None)
-    ans_user = models.CharField(max_length=50, verbose_name='使用用户', default=None)
-    ans_name = models.CharField(max_length=100, verbose_name='模块名称', default=None)
+    ans_id = models.IntegerField(verbose_name=u'id', blank=True, null=True, default=None)
+    ans_user = models.CharField(max_length=50, verbose_name=u'使用用户', default=None)
+    ans_name = models.CharField(max_length=100, verbose_name=u'模块名称', default=None)
     ans_content = models.CharField(max_length=100, default=None)
-    ans_server = models.TextField(verbose_name='服务器', default=None)
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='执行时间')
+    ans_server = models.TextField(verbose_name=u'服务器', default=None)
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'执行时间')
 
     class Meta:
         db_table = 'opsmanage_log_ansible_playbook'
@@ -620,7 +574,7 @@ class Log_Ansible_Playbook(models.Model):
 
 class Ansible_Playbook_Number(models.Model):
     playbook = models.ForeignKey('Ansible_Playbook', related_name='server_number', on_delete=models.CASCADE)
-    playbook_server = models.CharField(max_length=100, verbose_name='目标服务器', blank=True, null=True)
+    playbook_server = models.CharField(max_length=100, verbose_name=u'目标服务器', blank=True, null=True)
 
     class Meta:
         db_table = 'opsmanage_ansible_playbook_number'
@@ -638,10 +592,10 @@ class Ansible_Playbook_Number(models.Model):
 
 
 class Ansible_Inventory(models.Model):
-    name = models.CharField(max_length=200, unique=True, verbose_name='资产名称')
-    desc = models.CharField(max_length=200, verbose_name='功能描述')
-    user = models.SmallIntegerField(verbose_name='创建人')
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='创建时间')
+    name = models.CharField(max_length=200, unique=True, verbose_name=u'资产名称')
+    desc = models.CharField(max_length=200, verbose_name=u'功能描述')
+    user = models.SmallIntegerField(verbose_name=u'创建人')
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'创建时间')
 
     class Meta:
         db_table = 'opsmanage_ansible_inventory'
@@ -656,16 +610,16 @@ class Ansible_Inventory(models.Model):
 
 
 # class Log_Ansible_Inventory(models.Model):
-#     ans_user = models.CharField(max_length=50,verbose_name='使用用户',default=None)
+#     ans_user = models.CharField(max_length=50,verbose_name=u'使用用户',default=None)
 #     ans_content = models.CharField(max_length=500,default=None)
-#     create_time = models.DateTimeField(auto_now_add=True,blank=True,null=True,verbose_name='操作时间')
+#     create_time = models.DateTimeField(auto_now_add=True,blank=True,null=True,verbose_name=u'操作时间')
 #     class Meta:
 #         db_table = 'opsmanage_log_ansible_inventory'
 
 class Ansible_Inventory_Groups(models.Model):
     inventory = models.ForeignKey('Ansible_Inventory', related_name='inventory_group', on_delete=models.CASCADE)
-    group_name = models.CharField(max_length=100, verbose_name='group name')
-    ext_vars = models.TextField(verbose_name='组外部变量', blank=True, null=True)
+    group_name = models.CharField(max_length=100, verbose_name=u'group name')
+    ext_vars = models.TextField(verbose_name=u'组外部变量', blank=True, null=True)
 
     class Meta:
         db_table = 'opsmanage_ansible_inventory_groups'
@@ -677,7 +631,7 @@ class Ansible_Inventory_Groups(models.Model):
 class Ansible_Inventory_Groups_Server(models.Model):
     groups = models.ForeignKey('Ansible_Inventory_Groups', related_name='inventory_group_server',
                                on_delete=models.CASCADE)
-    server = models.SmallIntegerField(verbose_name='服务器')
+    server = models.SmallIntegerField(verbose_name=u'服务器')
 
     class Meta:
         db_table = 'opsmanage_ansible_inventory_groups_servers'
@@ -685,39 +639,39 @@ class Ansible_Inventory_Groups_Server(models.Model):
 
 
 class Global_Config(models.Model):
-    ansible_model = models.SmallIntegerField(verbose_name='是否开启ansible模块操作记录', blank=True, null=True)
-    ansible_playbook = models.SmallIntegerField(verbose_name='是否开启ansible剧本操作记录', blank=True, null=True)
-    cron = models.SmallIntegerField(verbose_name='是否开启计划任务操作记录', blank=True, null=True)
-    project = models.SmallIntegerField(verbose_name='是否开启项目操作记录', blank=True, null=True)
-    assets = models.SmallIntegerField(verbose_name='是否开启资产操作记录', blank=True, null=True)
-    server = models.SmallIntegerField(verbose_name='是否开启服务器命令记录', blank=True, null=True)
-    email = models.SmallIntegerField(verbose_name='是否开启邮件通知', blank=True, null=True)
-    webssh = models.SmallIntegerField(verbose_name='是否开启WebSSH', blank=True, null=True)
-    sql = models.SmallIntegerField(verbose_name='是否开启SQL更新通知', blank=True, null=True)
+    ansible_model = models.SmallIntegerField(verbose_name=u'是否开启ansible模块操作记录', blank=True, null=True)
+    ansible_playbook = models.SmallIntegerField(verbose_name=u'是否开启ansible剧本操作记录', blank=True, null=True)
+    cron = models.SmallIntegerField(verbose_name=u'是否开启计划任务操作记录', blank=True, null=True)
+    project = models.SmallIntegerField(verbose_name=u'是否开启项目操作记录', blank=True, null=True)
+    assets = models.SmallIntegerField(verbose_name=u'是否开启资产操作记录', blank=True, null=True)
+    server = models.SmallIntegerField(verbose_name=u'是否开启服务器命令记录', blank=True, null=True)
+    email = models.SmallIntegerField(verbose_name=u'是否开启邮件通知', blank=True, null=True)
+    webssh = models.SmallIntegerField(verbose_name=u'是否开启WebSSH', blank=True, null=True)
+    sql = models.SmallIntegerField(verbose_name=u'是否开启SQL更新通知', blank=True, null=True)
 
     class Meta:
         db_table = 'opsmanage_global_config'
 
 
 class Email_Config(models.Model):
-    site = models.CharField(max_length=100, verbose_name='部署站点')
-    host = models.CharField(max_length=100, verbose_name='邮件发送服务器')
-    port = models.SmallIntegerField(verbose_name='邮件发送服务器端口')
-    user = models.CharField(max_length=100, verbose_name='发送用户账户')
-    passwd = models.CharField(max_length=100, verbose_name='发送用户密码')
-    subject = models.CharField(max_length=100, verbose_name='发送邮件主题标识', default=u'[OPS]')
-    cc_user = models.TextField(verbose_name='抄送用户列表', blank=True, null=True)
+    site = models.CharField(max_length=100, verbose_name=u'部署站点')
+    host = models.CharField(max_length=100, verbose_name=u'邮件发送服务器')
+    port = models.SmallIntegerField(verbose_name=u'邮件发送服务器端口')
+    user = models.CharField(max_length=100, verbose_name=u'发送用户账户')
+    passwd = models.CharField(max_length=100, verbose_name=u'发送用户密码')
+    subject = models.CharField(max_length=100, verbose_name=u'发送邮件主题标识', default=u'[OPS]')
+    cc_user = models.TextField(verbose_name=u'抄送用户列表', blank=True, null=True)
 
     class Meta:
         db_table = 'opsmanage_email_config'
 
 
 class Server_Command_Record(models.Model):
-    user = models.CharField(max_length=50, verbose_name='远程用户')
-    server = models.CharField(max_length=50, verbose_name='服务器IP')
-    client = models.CharField(max_length=50, verbose_name='客户机IP', blank=True, null=True)
-    command = models.TextField(verbose_name='历史命令', blank=True, null=True)
-    etime = models.CharField(max_length=50, verbose_name='命令执行时间', unique=True)
+    user = models.CharField(max_length=50, verbose_name=u'远程用户')
+    server = models.CharField(max_length=50, verbose_name=u'服务器IP')
+    client = models.CharField(max_length=50, verbose_name=u'客户机IP', blank=True, null=True)
+    command = models.TextField(verbose_name=u'历史命令', blank=True, null=True)
+    etime = models.CharField(max_length=50, verbose_name=u'命令执行时间', unique=True)
 
     class Meta:
         db_table = 'opsmanage_server_command_record'
@@ -733,17 +687,17 @@ class Server_Command_Record(models.Model):
 
 class Ansible_CallBack_Model_Result(models.Model):
     logId = models.ForeignKey('Log_Ansible_Model')
-    content = models.TextField(verbose_name='输出内容', blank=True, null=True)
+    content = models.TextField(verbose_name=u'输出内容', blank=True, null=True)
 
 
 class Ansible_CallBack_PlayBook_Result(models.Model):
     logId = models.ForeignKey('Log_Ansible_Playbook')
-    content = models.TextField(verbose_name='输出内容', blank=True, null=True)
+    content = models.TextField(verbose_name=u'输出内容', blank=True, null=True)
 
 
 class User_Server(models.Model):
-    server_id = models.SmallIntegerField(verbose_name='服务器资产id')
-    user_id = models.SmallIntegerField(verbose_name='用户id')
+    server_id = models.SmallIntegerField(verbose_name=u'服务器资产id')
+    user_id = models.SmallIntegerField(verbose_name=u'用户id')
 
     class Meta:
         db_table = 'opsmanage_user_server'
@@ -759,15 +713,15 @@ class User_Server(models.Model):
 
 
 class Inception_Server_Config(models.Model):
-    db_name = models.CharField(max_length=100, verbose_name='数据库名', blank=True, null=True)
-    db_host = models.CharField(max_length=100, verbose_name='数据库地址')
-    db_user = models.CharField(max_length=100, verbose_name='用户', blank=True, null=True)
-    db_passwd = models.CharField(max_length=100, verbose_name='密码', blank=True, null=True)
-    db_backup_host = models.CharField(max_length=100, verbose_name='备份数据库地址')
-    db_backup_user = models.CharField(max_length=100, verbose_name='备份数据库账户')
-    db_backup_passwd = models.CharField(max_length=100, verbose_name='备份数据库密码')
-    db_backup_port = models.SmallIntegerField(verbose_name='备份数据库端口')
-    db_port = models.SmallIntegerField(verbose_name='端口')
+    db_name = models.CharField(max_length=100, verbose_name=u'数据库名', blank=True, null=True)
+    db_host = models.CharField(max_length=100, verbose_name=u'数据库地址')
+    db_user = models.CharField(max_length=100, verbose_name=u'用户', blank=True, null=True)
+    db_passwd = models.CharField(max_length=100, verbose_name=u'密码', blank=True, null=True)
+    db_backup_host = models.CharField(max_length=100, verbose_name=u'备份数据库地址')
+    db_backup_user = models.CharField(max_length=100, verbose_name=u'备份数据库账户')
+    db_backup_passwd = models.CharField(max_length=100, verbose_name=u'备份数据库密码')
+    db_backup_port = models.SmallIntegerField(verbose_name=u'备份数据库端口')
+    db_port = models.SmallIntegerField(verbose_name=u'端口')
 
     class Meta:
         db_table = 'opsmanage_inception_server_config'
@@ -791,18 +745,18 @@ class DataBase_Server_Config(models.Model):
         ('2', u'主从'),
         ('3', u'pxc'),
     )
-    db_env = models.CharField(choices=env_type, max_length=10, verbose_name='环境类型', default=None)
-    db_type = models.CharField(max_length=10, verbose_name='数据库类型', default=None)
-    db_name = models.CharField(max_length=100, verbose_name='数据库名', blank=True, null=True)
-    db_host = models.CharField(max_length=100, verbose_name='数据库地址')
-    db_mode = models.SmallIntegerField(choices=mode, verbose_name='架构类型', default=1)
-    db_user = models.CharField(max_length=100, verbose_name='用户')
-    db_passwd = models.CharField(max_length=100, verbose_name='密码')
-    db_port = models.IntegerField(verbose_name='端口')
-    db_group = models.SmallIntegerField(verbose_name='使用部门')
-    db_service = models.SmallIntegerField(verbose_name='业务类型')
-    db_project = models.SmallIntegerField(verbose_name='所属项目')
-    db_mark = models.CharField(max_length=100, verbose_name='标识', blank=True, null=True)
+    db_env = models.CharField(choices=env_type, max_length=10, verbose_name=u'环境类型', default=None)
+    db_type = models.CharField(max_length=10, verbose_name=u'数据库类型', default=None)
+    db_name = models.CharField(max_length=100, verbose_name=u'数据库名', blank=True, null=True)
+    db_host = models.CharField(max_length=100, verbose_name=u'数据库地址')
+    db_mode = models.SmallIntegerField(choices=mode, verbose_name=u'架构类型', default=1)
+    db_user = models.CharField(max_length=100, verbose_name=u'用户')
+    db_passwd = models.CharField(max_length=100, verbose_name=u'密码')
+    db_port = models.IntegerField(verbose_name=u'端口')
+    db_group = models.SmallIntegerField(verbose_name=u'使用部门')
+    db_service = models.SmallIntegerField(verbose_name=u'业务类型')
+    db_project = models.SmallIntegerField(verbose_name=u'所属项目')
+    db_mark = models.CharField(max_length=100, verbose_name=u'标识', blank=True, null=True)
 
     class Meta:
         db_table = 'opsmanage_database_server_config'
@@ -818,12 +772,12 @@ class DataBase_Server_Config(models.Model):
 
 
 class SQL_Execute_Histroy(models.Model):
-    exe_user = models.CharField(max_length=100, verbose_name='执行人')
-    exe_db = models.ForeignKey('DataBase_Server_Config', verbose_name='数据库id')
-    exe_sql = models.TextField(verbose_name='执行的SQL内容')
-    exec_status = models.SmallIntegerField(blank=True, null=True, verbose_name='执行状态')
-    exe_result = models.TextField(blank=True, null=True, verbose_name='执行结果')
-    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name='执行时间')
+    exe_user = models.CharField(max_length=100, verbose_name=u'执行人')
+    exe_db = models.ForeignKey('DataBase_Server_Config', verbose_name=u'数据库id')
+    exe_sql = models.TextField(verbose_name=u'执行的SQL内容')
+    exec_status = models.SmallIntegerField(blank=True, null=True, verbose_name=u'执行状态')
+    exe_result = models.TextField(blank=True, null=True, verbose_name=u'执行结果')
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=u'执行时间')
 
     class Meta:
         db_table = 'opsmanage_sql_execute_histroy'
@@ -838,7 +792,7 @@ class SQL_Execute_Histroy(models.Model):
 
 
 class Custom_High_Risk_SQL(models.Model):
-    sql = models.CharField(max_length=200, unique=True, verbose_name='SQL内容')
+    sql = models.CharField(max_length=200, unique=True, verbose_name=u'SQL内容')
 
     class Meta:
         db_table = 'opsmanage_custom_high_risk_sql'
@@ -853,13 +807,13 @@ class Custom_High_Risk_SQL(models.Model):
 
 
 class SQL_Audit_Control(models.Model):
-    t_auto_audit = models.SmallIntegerField(blank=True, null=True, verbose_name='测试环境自动授权')
-    t_backup_sql = models.SmallIntegerField(blank=True, null=True, verbose_name='测试环境自动备份SQL')
-    t_email = models.SmallIntegerField(blank=True, null=True, verbose_name='测试环境开启邮件通知')
-    p_auto_audit = models.SmallIntegerField(blank=True, null=True, verbose_name='正式环境自动授权')
-    p_backup_sql = models.SmallIntegerField(blank=True, null=True, verbose_name='正式环境自动备份SQL')
-    p_email = models.SmallIntegerField(blank=True, null=True, verbose_name='正式环境开启邮件通知')
-    audit_group = models.CharField(max_length=100, blank=True, null=True, verbose_name='审核组')
+    t_auto_audit = models.SmallIntegerField(blank=True, null=True, verbose_name=u'测试环境自动授权')
+    t_backup_sql = models.SmallIntegerField(blank=True, null=True, verbose_name=u'测试环境自动备份SQL')
+    t_email = models.SmallIntegerField(blank=True, null=True, verbose_name=u'测试环境开启邮件通知')
+    p_auto_audit = models.SmallIntegerField(blank=True, null=True, verbose_name=u'正式环境自动授权')
+    p_backup_sql = models.SmallIntegerField(blank=True, null=True, verbose_name=u'正式环境自动备份SQL')
+    p_email = models.SmallIntegerField(blank=True, null=True, verbose_name=u'正式环境开启邮件通知')
+    audit_group = models.CharField(max_length=100, blank=True, null=True, verbose_name=u'审核组')
 
     class Meta:
         db_table = 'opsmanage_sql_audit_control'

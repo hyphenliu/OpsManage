@@ -60,10 +60,6 @@ def getBaseAssets():
         maintenanceList = []
     # hyphen add end 20180714
     try:
-        lineList = Line_Assets.objects.all()
-    except:
-        lineList = []
-    try:
         raidList = Raid_Assets.objects.all()
     except:
         raidList = []
@@ -72,7 +68,7 @@ def getBaseAssets():
     except:
         projectList = []
     return {"group": groupList, "project": projectList, "zone": zoneList,
-            "line": lineList, "raid": raidList, "service": serviceList, "monitor": monitorList,
+            "raid": raidList, "service": serviceList, "monitor": monitorList,
             "contract": contractList, "provider": providerList, "status": statusList,
             "maintenance": maintenanceList, "type": typeList, "level": levelList}
 
@@ -467,7 +463,7 @@ def assets_import(request):
                 'business': data[21],
                 'project': data[22],
             }
-            if data[9]: assets['buy_time'] = xlrd.xldate.xldate_as_datetime(data[9], 0)
+            if data[9]: assets['enter_time'] = xlrd.xldate.xldate_as_datetime(data[9], 0)
             if data[14]: assets['service_start'] = xlrd.xldate.xldate_as_datetime(data[14], 0)
             if data[16]: assets['expire_date'] = xlrd.xldate.xldate_as_datetime(data[16], 0)
             if assets.get('assets_class') in ['vmser', 'server']:
@@ -486,7 +482,7 @@ def assets_import(request):
                     'ip': data[23],
                     'bandwidth': data[24],
                     'port_detail': data[25],
-                    'firmware': data[26],
+                    'ios_version': data[26],
                     'models_sn': data[27],
                     'asset_level': data[28],
                     'cpu': data[29],
@@ -561,14 +557,14 @@ def assets_search(request):
         for (k, v) in request.POST.items():
             if v is not None and v != u'':
                 data[k] = v
-        if list(set(['buy_time', 'expire_date', 'vcpu_number',
+        if list(set(['enter_time', 'expire_date', 'vcpu_number',
                      'cpu_core', 'cpu_number', 'ram_total',
                      'swap', 'disk_total']).intersection(set(request.POST.keys()))):
             try:
-                buy_time = request.POST.get('buy_time').split('-')
-                data.pop('buy_time')
-                data['buy_time__gte'] = buy_time[0] + '-01-01'
-                data['buy_time__lte'] = buy_time[1] + '-01-01'
+                enter_time = request.POST.get('enter_time').split('-')
+                data.pop('enter_time')
+                data['enter_time__gte'] = enter_time[0] + '-01-01'
+                data['enter_time__lte'] = enter_time[1] + '-01-01'
             except:
                 pass
             try:
@@ -687,10 +683,10 @@ def assets_search(request):
                     service = '''[{service}]<li><code>不在</code></li>基础配置表[业务项目]里'''.format(service=a.business)
             status = '''<button type="button" class="btn btn-outline btn-default">{status}</button>'''.format(
                 status=a.status)
-            if a.buy_time:
-                buy_time = '''{buy_time}'''.format(buy_time=a.buy_time)
+            if a.enter_time:
+                enter_time = '''{enter_time}'''.format(enter_time=a.enter_time)
             else:
-                buy_time = '''{buy_time}'''.format(buy_time=str(a.create_date)[0:10])
+                enter_time = '''{enter_time}'''.format(enter_time=str(a.create_date)[0:10])
             group = '''{groupname}'''.format(groupname=a.group)
             for z in baseAssets.get('zone'):
                 if z.zone_name == a.put_zone:
@@ -890,14 +886,14 @@ def assets_dumps(request):
         dRbt = CellWriter(filename)
         serSheet = dRbt.workbook.add_sheet('服务器设备资产', cell_overwrite_ok=True)
         netSheet = dRbt.workbook.add_sheet('网络设备资产', cell_overwrite_ok=True)
-        bList = ['设备类型', '资产编号', '机房位置', '机架位置', '设备型号', '设备序列号', '管理IP', '制造商', '购买时间', '资产合同',
+        bList = ['设备类型', '资产编号', '机房位置', '机架位置', '设备型号', '设备序列号', '管理IP', '制造商', '入网时间', '资产合同',
                  '维保服务商', '维保联系人', '维保服务级别', '维保开始时间', '维保合同', '过保时间', '资产归属人', '设备状态',
                  '监控状态', '使用部门', '所属业务系统', '所属业务项目', '主机地址', '认证方式', '账户', '主机名字', '端口', 'CPU型号',
                  'Raid类型', '物理CPU', '逻辑CPU', 'CPU核心数', '内存容量', '内核版本', 'Selinux状态', 'Swap分区', '磁盘空间',
                  '系统版本号', '机房线路']
-        nList = ['设备类型', '资产编号', '机房位置', '机架位置', '设备型号', '设备序列号', '管理IP', '制造商', '购买时间', '资产合同',
+        nList = ['设备类型', '资产编号', '机房位置', '机架位置', '设备型号', '设备序列号', '管理IP', '制造商', '入网时间', '资产合同',
                  '维保服务商', '维保联系人', '维保服务级别', '维保开始时间', '维保合同', '过保时间', '资产归属人', '设备状态',
-                 '监控状态', '使用部门', '所属业务系统', '所属业务项目', '主机地址', '背板带宽', '端口情况', '固件版本', '模块序列号',
+                 '监控状态', '使用部门', '所属业务系统', '所属业务项目', '主机地址', '背板带宽', '端口情况', '操作系统版本', '模块序列号',
                  '设备级别', 'CPU型号', '内存容量', '配置说明', '管理用户', '端口']
         dRbt.writeBanner(sheetName=serSheet, bList=bList)
         dRbt.writeBanner(sheetName=netSheet, bList=nList)
@@ -938,7 +934,7 @@ def assets_dumps(request):
                 sheet.write(ncount, 22, assets.network_assets.ip, dRbt.bodySttle())
                 sheet.write(ncount, 23, assets.network_assets.bandwidth, dRbt.bodySttle())
                 sheet.write(ncount, 24, assets.network_assets.port_detail, dRbt.bodySttle())
-                sheet.write(ncount, 25, assets.network_assets.firmware, dRbt.bodySttle())
+                sheet.write(ncount, 25, assets.network_assets.ios_version, dRbt.bodySttle())
                 sheet.write(ncount, 26, assets.network_assets.models_sn, dRbt.bodySttle())
                 sheet.write(ncount, 27, assets.network_assets.asset_level, dRbt.bodySttle())
                 sheet.write(ncount, 28, assets.network_assets.cpu, dRbt.bodySttle())
@@ -954,7 +950,7 @@ def assets_dumps(request):
             sheet.write(count, 5, assets.sn, dRbt.bodySttle())
             sheet.write(count, 6, assets.management_ip, dRbt.bodySttle())
             sheet.write(count, 7, assets.manufacturer, dRbt.bodySttle())
-            sheet.write(count, 8, str(assets.buy_time), dRbt.bodySttle())
+            sheet.write(count, 8, str(assets.enter_time), dRbt.bodySttle())
             sheet.write(count, 9, assets.contract, dRbt.bodySttle())
             sheet.write(count, 10, assets.provider, dRbt.bodySttle())
             sheet.write(count, 11, assets.service_contact, dRbt.bodySttle())
