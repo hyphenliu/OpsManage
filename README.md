@@ -262,6 +262,7 @@ Ansible部署功能：
 
 ===============================================================================================
 Hyphen.Liu Added
+'''
 1. 安装MegaCli
 下载地址：https://raw.githubusercontent.com/crazy-zhangcong/tools/master/MegaCli8.07.10.tar.gz
 # tar -zxf MegaCli8.07.10.tar.gz
@@ -366,3 +367,4 @@ sys.exit(0)
 if __name__ == '__main__':
     #main()
     Disk()
+'''
